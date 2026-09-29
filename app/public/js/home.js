@@ -122,6 +122,68 @@
   })();
 
   /* ------------------------------------------------------------
+     CATEGORIAS · setas
+     Com a animação (desktop), é o scroll da página que move o
+     trilho: a seta rola a página até a próxima categoria. Sem ela
+     (celular, "reduzir movimento"), a seta rola o próprio trilho.
+     ------------------------------------------------------------ */
+  var catsST = null; // ScrollTrigger do trilho, quando a animação está ligada
+  var atualizarSetasCats = function () {};
+  (function setasCategorias() {
+    var pin = $("#catsPin"), trilho = $("#catsTrack");
+    var prev = $("#catsPrev"), next = $("#catsNext");
+    if (!pin || !trilho || !prev || !next) return;
+    var alvo = null, alvoAte = 0; // destino pendente enquanto a rolagem anda
+
+    // Onde está o trilho (x) e até onde ele vai (max), em px
+    function estado() {
+      if (catsST) {
+        var max = catsST.end - catsST.start;
+        return { x: Math.min(max, Math.max(0, catsST.scroll() - catsST.start)), max: max };
+      }
+      return { x: pin.scrollLeft, max: pin.scrollWidth - pin.clientWidth };
+    }
+    // Deslocamento que põe cada bloco (abertura + categorias) na margem
+    function paradas(max) {
+      var itens = Array.prototype.slice.call(trilho.children);
+      var x0 = itens[0].offsetLeft;
+      return itens.map(function (el) { return Math.min(max, Math.max(0, el.offsetLeft - x0)); });
+    }
+    // Folga: sem animação, o celular encaixa o cartão pelo centro, uns
+    // 40px antes da margem; com animação, a parada é exata.
+    function folga() { return catsST ? 8 : 48; }
+
+    function ir(dir) {
+      var e = estado(), f = folga();
+      var base = alvo !== null && performance.now() < alvoAte ? alvo : e.x;
+      var ps = paradas(e.max), destino = null;
+      if (dir > 0) { for (var i = 0; i < ps.length; i++) if (ps[i] > base + f) { destino = ps[i]; break; } }
+      else { for (var j = ps.length - 1; j >= 0; j--) if (ps[j] < base - f) { destino = ps[j]; break; } }
+      if (destino === null) return;
+      alvo = destino; alvoAte = performance.now() + 900;
+      if (catsST) {
+        pin.scrollLeft = 0; // o foco do teclado pode ter rolado o trilho por dentro
+        var y = catsST.start + destino;
+        if (lenis) lenis.scrollTo(y, { duration: 0.8 });
+        else window.scrollTo({ top: y, behavior: "smooth" });
+      } else {
+        pin.scrollTo({ left: destino, behavior: reduce ? "auto" : "smooth" });
+      }
+    }
+
+    atualizarSetasCats = function () {
+      var e = estado();
+      prev.disabled = e.x <= 4;
+      next.disabled = e.x >= e.max - 4;
+    };
+    prev.addEventListener("click", function () { ir(-1); });
+    next.addEventListener("click", function () { ir(1); });
+    pin.addEventListener("scroll", function () { atualizarSetasCats(); }, { passive: true });
+    window.addEventListener("resize", function () { atualizarSetasCats(); });
+    atualizarSetasCats();
+  })();
+
+  /* ------------------------------------------------------------
      MAPA · lista e pinos apontam um para o outro
      ------------------------------------------------------------ */
   (function mapa() {
@@ -194,17 +256,27 @@
 
       var mm = gsap.matchMedia();
       mm.add("(min-width: 768px)", function () {
-        var trilho = $("#catsTrack");
+        var secao = $("#categorias"), pinCats = $("#catsPin"), trilho = $("#catsTrack");
         var dist = function () { return trilho.scrollWidth - window.innerWidth; };
+        // Daqui em diante o trilho não rola sozinho: anda com a página
+        secao.classList.add("cats-animado");
+        pinCats.scrollLeft = 0;
         var pan = gsap.to(trilho, {
           x: function () { return -dist(); }, ease: "none",
           scrollTrigger: { trigger: "#catsPin", start: "top top", end: function () { return "+=" + dist(); },
-            pin: true, scrub: 1, invalidateOnRefresh: true, anticipatePin: 1 }
+            pin: true, scrub: 1, invalidateOnRefresh: true, anticipatePin: 1,
+            onUpdate: function () { atualizarSetasCats(); }, onRefresh: function () { atualizarSetasCats(); } }
         });
+        catsST = pan.scrollTrigger;
         $$(".cat-media img").forEach(function (img) {
           gsap.fromTo(img, { xPercent: -12 }, { xPercent: 0, ease: "none",
             scrollTrigger: { trigger: img.closest(".cat"), containerAnimation: pan, start: "left right", end: "right left", scrub: true } });
         });
+        return function () {
+          catsST = null;
+          secao.classList.remove("cats-animado");
+          atualizarSetasCats();
+        };
       });
 
       $$(".display.h-l, .display.h-xl").forEach(function (h) {

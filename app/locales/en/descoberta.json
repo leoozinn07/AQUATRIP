@@ -15,6 +15,9 @@
     "seja_parceiro": "Become a partner",
     "cats_titulo": "6 ways to get in the water.",
     "cats_sub": "Each with its own destinations, times and organizers. Scroll and pick yours.",
+    "cats_nav_aria": "Browse categories",
+    "cats_anteriores": "Previous category",
+    "cats_proximas": "Next category",
     "cat_chamada": {
       "praia": "White sand and calm water for the whole day.",
       "mergulho": "Reefs, wrecks and marine life up close.",
@@ -28,6 +31,7 @@
     "dest_titulo": "Places that deserve a spot on your map.",
     "dest_anteriores": "Previous destinations",
     "dest_proximos": "Next destinations",
+    "dest_nav_aria": "Browse destinations",
     "dest_regiao_aria": "Featured destinations",
     "ver_todas": "See all experiences",
     "abrir_catalogo": "Open catalog",

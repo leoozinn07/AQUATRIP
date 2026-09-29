@@ -167,7 +167,24 @@
    CATEGORIAS · slides horizontais presos ao scroll
    ============================================================== */
 .cats { background: linear-gradient(180deg, var(--d0) 0%, var(--d1) 100%); position: relative; }
-.cats-pin { position: relative; overflow: hidden; }
+/* Sem a animação (celular, "reduzir movimento" ou GSAP fora do ar) o
+   trilho rola de lado, com encaixe, e as setas também funcionam.
+   position: static prende as setas à seção, e não ao trilho que rola. */
+.cats-pin {
+  position: static; overflow-x: auto; overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory; scrollbar-width: none;
+  scroll-padding-left: max(var(--gutter), calc((100% - var(--maxw)) / 2 + var(--gutter)));
+}
+.cats-pin::-webkit-scrollbar { display: none; }
+.cats-intro, .cat { scroll-snap-align: start; }
+/* Com a animação (desktop), é o scroll da página que move o trilho */
+.cats-animado .cats-pin { position: relative; overflow: hidden; scroll-snap-type: none; }
+/* Setas: canto superior direito, na mesma margem das setas de Destinos,
+   por cima da foto que estiver passando. */
+.cats-nav {
+  position: absolute; z-index: 2; top: calc(var(--header-h) + 64px);
+  right: max(var(--gutter), calc((100% - var(--maxw)) / 2 + var(--gutter)));
+}
 .cats-track {
   display: flex; gap: clamp(16px, 2.4vw, 40px); align-items: stretch;
   padding: calc(var(--header-h) + 48px) var(--gutter) 64px;
@@ -212,9 +229,10 @@
   .cats-intro { justify-content: flex-start; gap: 20px; }
   /* scroll-padding: o ponto de encaixe respeita a margem lateral. Sem
      ele, o encaixe do primeiro bloco colava o título na borda da tela. */
-  .cats-pin { overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; scroll-padding-inline: var(--gutter); }
-  .cats-pin::-webkit-scrollbar { display: none; }
-  .cats-track { padding-top: 88px; }
+  .cats-pin { scroll-padding-inline: var(--gutter); }
+  /* No celular as setas ficam logo abaixo dos cartões, à esquerda */
+  .cats-track { padding-top: 88px; padding-bottom: 84px; }
+  .cats-nav { top: auto; bottom: 14px; right: auto; left: var(--gutter); }
   .cats-intro { flex-basis: 78vw; scroll-snap-align: start; }
   .cat { flex-basis: 82vw; scroll-snap-align: center; }
   .cat-media { aspect-ratio: 4 / 5; }
@@ -229,9 +247,7 @@
 }
 .dest-head { display: grid; gap: 20px; margin-bottom: clamp(32px, 4vw, 56px); }
 .dest-head .h-l { max-width: 14ch; }
-.carousel-ctrl { display: flex; align-items: center; gap: 12px; }
-.carousel-ctrl .icon-btn { border-color: var(--line-strong); width: 52px; height: 52px; }
-.carousel-ctrl .icon-btn[disabled] { opacity: .35; cursor: default; }
+.carousel-ctrl { display: flex; align-items: center; gap: 16px; }
 .carousel-progress { flex: 1; height: 2px; position: relative; max-width: 220px; overflow: hidden; border-radius: 2px; }
 .carousel-progress b { position: absolute; inset: 0; background: var(--ink); transform-origin: 0 50%; transform: scaleX(.2); }
 @media (min-width: 900px) {
@@ -437,6 +453,7 @@
   .depth { display: flex; }
   .home main .wrap { padding-right: max(var(--gutter), 108px); }
   .home .carousel { padding-right: max(var(--gutter), 108px); }
+  .cats-nav { right: calc(max(0px, (100% - var(--maxw)) / 2) + max(var(--gutter), 108px)); }
 }
 
 /* ---------- Abertura: controlada por intro-gate.js ---------- */

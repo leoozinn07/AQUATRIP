@@ -349,6 +349,28 @@ p { text-wrap: pretty; }
 .btn .arrow { transition: transform 200ms var(--ease-out); }
 @media (hover: hover) and (pointer: fine) { .btn:hover .arrow, .btn-primary:hover .arrow { transform: translateX(3px); } }
 
+/* Setas de carrossel: as duas numa mini caixa arredondada. O raio de
+   dentro (10px) é o de fora (14px) menos o respiro (4px), então os
+   cantos ficam paralelos. */
+.slider-nav {
+  display: inline-flex; align-items: center; gap: 4px; padding: 4px; flex: 0 0 auto;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.slider-btn {
+  width: var(--tap-min); height: var(--tap-min); display: grid; place-items: center;
+  border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--ink); cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 160ms var(--ease-out), background-color 160ms ease, opacity 160ms ease;
+}
+.slider-btn svg { width: 20px; height: 20px; stroke-width: 1.8; }
+.slider-btn:active:not(:disabled) { transform: scale(0.95); }
+.slider-btn:disabled { opacity: .35; cursor: default; }
+.slider-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+@media (hover: hover) and (pointer: fine) {
+  .slider-btn:hover:not(:disabled) { background: var(--accent-soft); color: var(--accent-ink); }
+}
+
 .icon-btn {
   width: var(--tap-min); height: var(--tap-min); display: inline-grid; place-items: center; flex: 0 0 auto;
   border-radius: var(--radius-pill); border: 1px solid var(--line); background: transparent; color: inherit; cursor: pointer;

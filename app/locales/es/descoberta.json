@@ -15,6 +15,9 @@
     "seja_parceiro": "Hazte socio",
     "cats_titulo": "6 formas de entrar al agua.",
     "cats_sub": "Cada uno con sus destinos, horarios y organizadores. Desplázate y elige el tuyo.",
+    "cats_nav_aria": "Navegar por las categorías",
+    "cats_anteriores": "Categoría anterior",
+    "cats_proximas": "Categoría siguiente",
     "cat_chamada": {
       "praia": "Arena blanca y agua tranquila para todo el día.",
       "mergulho": "Arrecifes, naufragios y vida marina de cerca.",
@@ -28,6 +31,7 @@
     "dest_titulo": "Lugares que merecen un espacio en tu mapa.",
     "dest_anteriores": "Destinos anteriores",
     "dest_proximos": "Próximos destinos",
+    "dest_nav_aria": "Navegar por los destinos",
     "dest_regiao_aria": "Destinos destacados",
     "ver_todas": "Ver todas las experiencias",
     "abrir_catalogo": "Abrir catálogo",

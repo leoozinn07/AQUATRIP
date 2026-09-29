@@ -81,6 +81,10 @@
           </a>
         <% }); %>
       </div>
+      <div class="slider-nav cats-nav" role="group" aria-label="<%= t('home.cats_nav_aria') %>">
+        <button class="slider-btn" type="button" id="catsPrev" aria-label="<%= t('home.cats_anteriores') %>" aria-controls="catsTrack"><i data-lucide="arrow-left"></i></button>
+        <button class="slider-btn" type="button" id="catsNext" aria-label="<%= t('home.cats_proximas') %>" aria-controls="catsTrack"><i data-lucide="arrow-right"></i></button>
+      </div>
     </div>
   </section>
 
@@ -88,11 +92,15 @@
   <section class="dest" id="destinos" data-depth="12" data-label="Destinos" aria-labelledby="t-dest">
     <div class="wrap dest-head">
       <h2 class="display h-l" id="t-dest"><%= t('home.dest_titulo') %></h2>
+      <% if (destaques.length) { %>
       <div class="carousel-ctrl">
         <div class="carousel-progress" aria-hidden="true"><b id="carBar"></b></div>
-        <button class="icon-btn" type="button" id="carPrev" aria-label="<%= t('home.dest_anteriores') %>" aria-controls="carousel"><i data-lucide="arrow-left"></i></button>
-        <button class="icon-btn" type="button" id="carNext" aria-label="<%= t('home.dest_proximos') %>" aria-controls="carousel"><i data-lucide="arrow-right"></i></button>
+        <div class="slider-nav" role="group" aria-label="<%= t('home.dest_nav_aria') %>">
+          <button class="slider-btn" type="button" id="carPrev" aria-label="<%= t('home.dest_anteriores') %>" aria-controls="carousel"><i data-lucide="arrow-left"></i></button>
+          <button class="slider-btn" type="button" id="carNext" aria-label="<%= t('home.dest_proximos') %>" aria-controls="carousel"><i data-lucide="arrow-right"></i></button>
+        </div>
       </div>
+      <% } %>
     </div>
     <% if (destaques.length) { %>
       <div class="carousel" id="carousel" tabindex="0" role="region" aria-label="<%= t('home.dest_regiao_aria') %>">
