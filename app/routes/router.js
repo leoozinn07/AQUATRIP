@@ -62,12 +62,18 @@ router.post('/reservas/:id/cancelar', requireAuth, writeLimiter, csrfProtect, bo
 
 router.get('/minhas-reservas', requireAuth, bookingController.listMyBookings);
 
+/* Favoritos: lista privada de experiências salvas */
+var favoritoController = require('../controllers/favoritoController');
+router.get('/favoritos', requireAuth, favoritoController.pagina);
+router.post('/api/favoritos/:id', requireAuth, socialLimiter, csrfProtect, favoritoController.definir);
+
 router.get('/', homeController.index);
 
 /* Configurações (idioma e tema) e aceite dos Termos */
 var settingsController = require('../controllers/settingsController');
 router.get('/configuracoes', settingsController.pagina);
 router.post('/configuracoes/idioma', writeLimiter, csrfProtect, settingsController.idioma);
+router.post('/configuracoes/libras', writeLimiter, csrfProtect, settingsController.libras);
 router.post('/aceite-termos', requireAuth, writeLimiter, csrfProtect, settingsController.aceitarTermos);
 
 /* ------------------------------------------------------------------

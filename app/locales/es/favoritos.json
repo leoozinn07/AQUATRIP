@@ -1,0 +1,16 @@
+{
+  "favoritos": {
+    "titulo": "Favoritos",
+    "lead": "Las experiencias que guardaste para decidir con calma. Solo tú ves esta lista.",
+    "salvar": "Guardar",
+    "salvo": "En favoritos",
+    "salvar_aria": "Guardar {titulo} en favoritos",
+    "vazio_titulo": "Todavía no guardaste nada",
+    "vazio_texto": "Toca el marcador de una experiencia para guardarla aquí y volver cuando quieras.",
+    "explorar": "Explorar experiencias"
+  },
+  "client": {
+    "fav_salvo": "Guardado en tus favoritos.",
+    "fav_removido": "Quitado de favoritos."
+  }
+}

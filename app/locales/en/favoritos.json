@@ -1,0 +1,16 @@
+{
+  "favoritos": {
+    "titulo": "Favorites",
+    "lead": "The experiences you saved to decide at your own pace. Only you can see this list.",
+    "salvar": "Save",
+    "salvo": "Saved",
+    "salvar_aria": "Save {titulo} to favorites",
+    "vazio_titulo": "Nothing saved yet",
+    "vazio_texto": "Tap the bookmark on any experience to keep it here and come back whenever you like.",
+    "explorar": "Explore experiences"
+  },
+  "client": {
+    "fav_salvo": "Saved to your favorites.",
+    "fav_removido": "Removed from favorites."
+  }
+}

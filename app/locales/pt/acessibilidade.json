@@ -1,0 +1,12 @@
+{
+  "libras": {
+    "ligar": "Ativar tradução para Libras (VLibras)",
+    "desligar": "Desativar tradução para Libras",
+    "titulo": "Libras",
+    "texto": "O VLibras, do Governo Federal, traduz o texto do site para a Língua Brasileira de Sinais com um avatar 3D. Ao ativar, esta página passa a carregar o VLibras dos servidores do gov.br.",
+    "estado_on": "Ativado neste navegador.",
+    "estado_off": "Desativado.",
+    "botao_on": "Ativar Libras",
+    "botao_off": "Desativar Libras"
+  }
+}

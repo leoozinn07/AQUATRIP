@@ -185,6 +185,7 @@
 .sx-btn.is-on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); }
 .sx-btn[data-curtir].is-on { border-color: #e0445b; background: color-mix(in srgb, #e0445b 12%, var(--surface)); color: #c2334a; }
 .sx-btn[data-curtir].is-on svg { fill: currentColor; }
+.sx-btn[data-favorito].is-on svg { fill: currentColor; }
 .sx-btn-primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .sx-btn-primary:hover { color: var(--on-accent); background: var(--accent-hover); }
 .sx-btn-quiet { border-color: transparent; background: transparent; color: var(--ink-2); }

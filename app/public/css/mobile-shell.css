@@ -119,6 +119,12 @@
 .theme-toggle svg { width: 19px; height: 19px; }
 .theme-toggle [hidden] { display: none !important; }
 .search-trigger-mobile { width: 48px; height: 48px; }
+/* Libras (VLibras): visível em todas as telas, é acessibilidade */
+.libras-form { display: contents; }
+.libras-toggle { width: 48px; height: 48px; }
+.libras-toggle svg { width: 19px; height: 19px; }
+.libras-toggle.is-on { background: var(--accent-soft); color: var(--accent-ink); border-color: var(--accent); }
+@media (min-width: 1024px) { .libras-toggle { width: var(--tap-min); height: var(--tap-min); } }
 
 @media (min-width: 1024px) {
   .main-nav { display: flex; }

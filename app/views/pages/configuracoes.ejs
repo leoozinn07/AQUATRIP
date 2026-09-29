@@ -56,6 +56,20 @@
       </fieldset>
     </section>
 
+    <section class="config-sec" aria-labelledby="c-libras">
+      <div class="config-sec-head">
+        <h2 id="c-libras"><%= t('libras.titulo') %></h2>
+        <p><%= t('libras.texto') %></p>
+      </div>
+      <form action="/configuracoes/libras" method="POST">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <input type="hidden" name="redirect" value="/configuracoes">
+        <input type="hidden" name="ligar" value="<%= libras ? '0' : '1' %>">
+        <p class="config-note" role="status"><%= libras ? t('libras.estado_on') : t('libras.estado_off') %></p>
+        <button type="submit" class="<%= libras ? 'btn-ghost' : 'btn-primary' %>"><i data-lucide="hand"></i> <%= libras ? t('libras.botao_off') : t('libras.botao_on') %></button>
+      </form>
+    </section>
+
     <section class="config-sec" aria-labelledby="c-conta">
       <div class="config-sec-head">
         <h2 id="c-conta"><%= t('config.conta') %></h2>

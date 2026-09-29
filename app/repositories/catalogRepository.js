@@ -16,7 +16,10 @@ const { visivel, semExemplo } = require("../lib/visibilidade");
 
 const FUSO = process.env.OPERATION_TIMEZONE || "America/Sao_Paulo";
 
-async function listByCategory(categoria) {
+/* Consulta dos cartões: dados da experiência, capa, quem opera,
+   próxima data com vaga e nota. "filtro" e "ordem" vêm só de dentro
+   deste arquivo (nunca de entrada do usuário); valores vão em params. */
+async function cartoes({ filtro, params, ordem, extras = "", juntar = "" }) {
   const { rows } = await db.query(
     `WITH livres AS (
        SELECT s.id, s.service_id, s.starts_at,
@@ -37,18 +40,38 @@ async function listByCategory(categoria) {
             (SELECT ROUND(AVG(r.rating), 1) FROM reviews r
               WHERE r.service_id = sv.id AND r.status = 'VISIBLE') AS nota_media,
             (SELECT COUNT(*) FROM reviews r
-              WHERE r.service_id = sv.id AND r.status = 'VISIBLE') AS total_avaliacoes
+              WHERE r.service_id = sv.id AND r.status = 'VISIBLE') AS total_avaliacoes${extras}
      FROM services sv
      LEFT JOIN livres l ON l.service_id = sv.id
      LEFT JOIN media m ON m.id = sv.cover_media_id
-     LEFT JOIN partners pa ON pa.id = sv.partner_id
-     WHERE ${visivel("sv")} AND ${semExemplo("sv")} AND (? IS NULL OR sv.category = ?)
+     LEFT JOIN partners pa ON pa.id = sv.partner_id${juntar}
+     WHERE ${visivel("sv")} AND ${filtro}
      GROUP BY sv.id, m.storage_key, pa.display_name
-     -- Primeiro o que dá para reservar, pela data mais próxima.
-     ORDER BY proxima_data IS NULL, proxima_data, sv.title`,
-    [categoria, categoria]
+     ORDER BY ${ordem}`,
+    params
   );
   return rows;
+}
+
+function listByCategory(categoria) {
+  return cartoes({
+    filtro: `${semExemplo("sv")} AND (? IS NULL OR sv.category = ?)`,
+    params: [categoria, categoria],
+    // Primeiro o que dá para reservar, pela data mais próxima.
+    ordem: "proxima_data IS NULL, proxima_data, sv.title",
+  });
+}
+
+/** Favoritos da pessoa, do salvo mais recente ao mais antigo. Conteúdo
+    de exemplo (seed da comunidade) vem marcado, para o cartão avisar. */
+function listFavorites(userId) {
+  return cartoes({
+    filtro: "f.user_id = ?",
+    params: [userId],
+    juntar: "\n     JOIN favorites f ON f.service_id = sv.id",
+    extras: `, MAX(f.created_at) AS favoritado_em, NOT ${semExemplo("sv")} AS exemplo`,
+    ordem: "favoritado_em DESC",
+  });
 }
 
 /** Quantas experiências ativas cada categoria tem — navegação do catálogo. */
@@ -64,4 +87,4 @@ function listAll() {
   return listByCategory(null);
 }
 
-module.exports = { FUSO, listByCategory, listAll, countByCategory };
+module.exports = { FUSO, listByCategory, listAll, listFavorites, countByCategory };

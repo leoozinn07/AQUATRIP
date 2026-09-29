@@ -38,6 +38,11 @@
 <script src="/js/i18n.js"></script>
 <script src="/vendor/lucide.min.js"></script>
 <script src="/js/form-kit.js" defer></script>
+<script src="/js/favoritos.js" defer></script>
+<% if (locals.libras) { %>
+<script src="https://vlibras.gov.br/app/vlibras-plugin.js" defer></script>
+<script src="/js/vlibras.js" defer></script>
+<% } %>
 
 <a class="skip-link" href="#main-content"><%= t('shell.pular') %></a>
 <div id="offlineBanner" class="offline-banner" role="status" aria-live="polite">
@@ -85,6 +90,14 @@
   </div>
 <% } %>
 
+<% if (locals.libras) { %>
+<%# Marcação exigida pelo VLibras (documentação do gov.br) %>
+<div vw class="enabled">
+  <div vw-access-button class="active"></div>
+  <div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div>
+</div>
+<% } %>
+
 <!-- CABEÇALHO -->
 <header class="app-header" id="appHeader">
   <div class="app-header-inner">
@@ -113,6 +126,17 @@
       <i data-lucide="search"></i>
     </button>
 
+    <%# Libras (VLibras, gov.br): só carrega para quem liga. Formulário: funciona sem JavaScript. %>
+    <form class="libras-form" action="/configuracoes/libras" method="POST">
+      <input type="hidden" name="_csrf" value="<%= csrf %>">
+      <input type="hidden" name="ligar" value="<%= locals.libras ? '0' : '1' %>">
+      <input type="hidden" name="redirect" value="<%= caminho || '/' %>">
+      <button class="icon-btn libras-toggle<%= locals.libras ? ' is-on' : '' %>" type="submit" aria-pressed="<%= Boolean(locals.libras) %>"
+              aria-label="<%= locals.libras ? t('libras.desligar') : t('libras.ligar') %>" title="<%= locals.libras ? t('libras.desligar') : t('libras.ligar') %>">
+        <i data-lucide="hand"></i>
+      </button>
+    </form>
+
     <button class="icon-btn theme-toggle" type="button" data-theme-toggle aria-pressed="false" aria-label="<%= t('client.tema_para_escuro') %>">
       <i data-lucide="sun" data-icon-light></i>
       <i data-lucide="moon" data-icon-dark hidden></i>
@@ -133,6 +157,7 @@
             <a href="/criar_experiencia"><i data-lucide="circle-plus"></i> <%= t('comunidade.criar') %></a>
             <a href="/perfil_editado"><i data-lucide="user-round"></i> <%= t('conta.minha_conta') %></a>
             <a href="/minhas-reservas"><i data-lucide="calendar-check"></i> <%= t('conta.minhas_reservas') %></a>
+            <a href="/favoritos"><i data-lucide="bookmark"></i> <%= t('favoritos.titulo') %></a>
             <a href="/ingressos"><i data-lucide="ticket"></i> <%= t('conta.ingressos') %></a>
             <a href="/viagens"><i data-lucide="map"></i> <%= t('conta.diario') %></a>
             <a href="/configuracoes"><i data-lucide="settings-2"></i> <%= t('conta.configuracoes') %></a>
@@ -184,6 +209,7 @@
           <li><a href="/criar_experiencia"><i data-lucide="circle-plus"></i> <%= t('comunidade.criar') %></a></li>
           <li><a href="/perfil_editado"><i data-lucide="user-round"></i> <%= t('conta.minha_conta') %></a></li>
           <li><a href="/minhas-reservas"><i data-lucide="calendar-check"></i> <%= t('conta.minhas_reservas') %></a></li>
+          <li><a href="/favoritos"><i data-lucide="bookmark"></i> <%= t('favoritos.titulo') %></a></li>
           <li><a href="/ingressos"><i data-lucide="ticket"></i> <%= t('conta.ingressos') %></a></li>
           <li><a href="/viagens"><i data-lucide="map"></i> <%= t('conta.diario') %></a></li>
           <li><a href="/feedback"><i data-lucide="message-square-warning"></i> <%= t('comunidade.feedback_link') %></a></li>

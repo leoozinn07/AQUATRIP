@@ -6,6 +6,7 @@ const termos = require("../lib/termos");
 const userRepository = require("../repositories/userRepository");
 const auditService = require("../services/auditService");
 const { AuditAction } = auditService;
+const vlibras = require("../middlewares/vlibras");
 
 /** Só caminhos internos: impede redirecionamento aberto. */
 function destinoSeguro(valor, padrao = "/configuracoes") {
@@ -40,6 +41,17 @@ async function idioma(req, res, next) {
   }
 }
 
+/** Liga/desliga a tradução para Libras (VLibras). Vale para o navegador,
+    logado ou não: fica num cookie de um ano. */
+function libras(req, res) {
+  const ligar = req.body.ligar === "1";
+  res.cookie(vlibras.COOKIE, ligar ? "1" : "0", {
+    maxAge: 365 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: "lax",
+    secure: process.env.NODE_ENV === "production", path: "/",
+  });
+  res.redirect(destinoSeguro(req.body.redirect));
+}
+
 /** Aceite (ou novo aceite) da versão vigente dos Termos e da Política. */
 async function aceitarTermos(req, res, next) {
   const destino = destinoSeguro(req.body.redirect, "/");
@@ -67,4 +79,4 @@ function exigirAceite(req, res, next) {
   next();
 }
 
-module.exports = { pagina, idioma, aceitarTermos, exigirAceite, destinoSeguro };
+module.exports = { pagina, idioma, libras, aceitarTermos, exigirAceite, destinoSeguro };

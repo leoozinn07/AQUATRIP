@@ -76,7 +76,7 @@
             </div>
             <div class="cat-foot">
               <p><strong><%= categoriaRotulo(c.chave) %>.</strong> <%= t('home.cat_chamada.' + c.chave) %></p>
-              <span class="cat-count"><%= c.n ? t('home.cat_n', { n: c.n }) : t('home.em_breve') %></span>
+              <span class="cat-count"><%= c.n ? t(c.n === 1 ? 'home.cat_um' : 'home.cat_n', { n: c.n }) : t('home.em_breve') %></span>
             </div>
           </a>
         <% }); %>
@@ -164,7 +164,7 @@
           <% lugares.forEach(function (l) { %>
             <li><button type="button" data-place="<%= l.nome %>" aria-pressed="false">
               <strong><%= l.nome %></strong>
-              <span class="n"><%= t('home.lugar_n', { n: l.n }) %></span>
+              <span class="n"><%= t(l.n === 1 ? 'home.lugar_um' : 'home.lugar_n', { n: l.n }) %></span>
               <% if (l.coord) { %><span class="mono"><%= l.coord %> · <%= l.sub %></span><% } %>
             </button></li>
           <% }); %>

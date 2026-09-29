@@ -122,6 +122,22 @@ teste** (nenhum valor real é cobrado):
 Também dá para ver o ingresso, cancelar com estorno, avaliar com fotos depois da data,
 exportar ou pedir exclusão dos dados (LGPD).
 
+**Favoritos:** o marcador na foto de qualquer cartão (ou "Favoritar" na página
+da experiência) guarda a experiência em `/favoritos`, uma lista que só a
+própria pessoa vê. Visitante é levado ao login e volta para onde estava.
+
+**Catálogo:** `npm run db:seed:services` grava as 23 experiências operadas pelo
+AquaTrip (lista em `app/lib/catalogoOficial.js`), em destinos reais das seis
+categorias, com horários para os próximos 30 dias. Rodar de novo só completa a
+agenda. Para acrescentar uma experiência oficial, edite essa lista (e, se for
+cidade nova, o pino em `LUGARES`, no `homeController.js`).
+
+**Libras:** o botão com a mão, no cabeçalho (ou em Configurações), liga o
+[VLibras](https://www.gov.br/governodigital/pt-br/vlibras), o tradutor de
+Libras do Governo Federal. Ele só carrega para quem liga: sem a opção, o site
+continua sem nenhum script de terceiro. Ligado, a CSP libera apenas
+`vlibras.gov.br` (ver `app/middlewares/vlibras.js`).
+
 **Como parceiro:** candidatar-se (aceita CNPJ alfanumérico, em vigor desde
 julho/2026), conectar o Mercado Pago pelo simulador de consentimento, cadastrar
 experiências e horários (publicadas na hora, moderadas depois), ver quem reservou (com o código
