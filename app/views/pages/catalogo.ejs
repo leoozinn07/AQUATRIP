@@ -19,6 +19,10 @@
   <%- include('../partials/seo') %>
   <link rel="stylesheet" href="/css/catalogo.css" />
   <script src="/js/theme.js"></script>
+  <link rel="stylesheet" href="/css/transicoes.css" />
+  <%# Na volta da experiência, a transição precisa achar o cartão antes da primeira pintura:
+      espera o elemento logo depois da grade, com todos os cartões já lidos %>
+  <link rel="expect" href="#no-results" blocking="render">
 </head>
 <body>
 <%- include('../partials/header') %>

@@ -9,7 +9,10 @@
   <meta name="csrf-token" content="<%= csrfToken %>">
   <link rel="stylesheet" href="/css/experiencia.css" />
   <link rel="stylesheet" href="/css/comunidade.css" />
+  <%# A transição de chegada espera a capa existir antes da primeira pintura %>
+  <link rel="expect" href="#xpHero" blocking="render">
   <script src="/js/theme.js"></script>
+  <link rel="stylesheet" href="/css/transicoes.css" />
 </head>
 <body>
 
@@ -37,7 +40,7 @@
       <span aria-current="page"><%= service.title %></span>
     </nav>
 
-    <figure class="xp-hero">
+    <figure class="xp-hero" id="xpHero">
       <img src="<%= c.src %>" alt="<%= c.alt %>" fetchpriority="high">
       <% if (c.ilustrativa) { %><figcaption><%= t('exp.imagem_ilustrativa') %></figcaption><% } %>
     </figure>

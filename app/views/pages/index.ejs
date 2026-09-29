@@ -12,6 +12,10 @@
   <link rel="preload" href="/fonts/inter-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/img/noronha-hero.webp" as="image" fetchpriority="high">
   <link rel="stylesheet" href="/css/index.css">
+  <link rel="stylesheet" href="/css/transicoes.css" />
+  <%# Na volta da experiência, a transição precisa achar o cartão antes da primeira pintura:
+      espera o elemento logo depois da grade, com todos os cartões já lidos %>
+  <link rel="expect" href="#destNota" blocking="render">
 </head>
 <body data-hero-header class="home">
 
@@ -112,7 +116,7 @@
           <span class="link-arrow"><%= t('home.abrir_catalogo') %> <i data-lucide="arrow-right"></i></span>
         </a>
       </div>
-      <p class="wrap dest-note"><%= t('home.dest_nota') %></p>
+      <p class="wrap dest-note" id="destNota"><%= t('home.dest_nota') %></p>
     <% } else { %>
       <div class="wrap"><p class="lead"><%- t('home.dest_vazio_html') %></p></div>
     <% } %>
