@@ -132,6 +132,10 @@ categorias, com horários para os próximos 30 dias. Rodar de novo só completa 
 agenda. Para acrescentar uma experiência oficial, edite essa lista (e, se for
 cidade nova, o pino em `LUGARES`, no `homeController.js`).
 
+**Abertura com água:** na home, a foto do topo reage ao mouse e ao toque como
+superfície de água (WebGL2, sem biblioteca externa, em `app/public/js/agua.js`).
+Com "reduzir movimento", economia de dados ou sem WebGL2, fica a foto parada.
+
 **Libras:** o botão com a mão, no cabeçalho (ou em Configurações), liga o
 [VLibras](https://www.gov.br/governodigital/pt-br/vlibras), o tradutor de
 Libras do Governo Federal. Ele só carrega para quem liga: sem a opção, o site

@@ -110,6 +110,13 @@
   width: 100%; height: 118%; max-width: none; object-fit: cover; object-position: 50% 45%;
   transform-origin: 50% 40%; will-change: transform;
 }
+/* Água interativa (agua.js): o canvas ocupa a mesma caixa da foto e,
+   quando o primeiro quadro sai, esconde a foto parada que está embaixo. */
+.hero-agua {
+  position: absolute; left: 0; top: 0; width: 100%; height: 118%;
+  transform-origin: 50% 40%; pointer-events: none; display: block;
+}
+.hero.agua-on #heroImg { visibility: hidden; }
 .hero::after {
   content: ""; position: absolute; inset: 0; z-index: -1;
   background:
