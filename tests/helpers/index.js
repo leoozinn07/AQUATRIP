@@ -52,6 +52,7 @@ async function resetDatabase() {
     "experience_reports",
     "platform_feedback",
     "chat_usage",
+    "favorites",
   ];
 
   const placeholders = candidates.map(() => "?").join(", ");

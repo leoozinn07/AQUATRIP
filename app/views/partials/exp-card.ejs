@@ -4,21 +4,26 @@
     full  título completo (catálogo) ou curto (carrossel)
     meta  mostra próxima data e avaliações
     eager carrega a imagem sem lazy (primeiro cartão visível)
+  O link fica no título e cobre o cartão todo (::after); assim o botão
+  de favoritar, por cima da foto, não fica dentro de um link.
 %>
 <%
   const c = capaDe(e);
   const sc = aquaScore(e.slug);
   const preco = Math.round(e.price_cents / 100);
   const temVaga = Boolean(e.proxima_data);
+  const fav = Boolean(locals.favoritos && locals.favoritos.has && locals.favoritos.has(e.id));
 %>
-<a class="exp-card" href="/reservar/<%= encodeURIComponent(e.slug) %>">
+<article class="exp-card">
   <figure class="exp-media">
     <img src="<%= c.src %>" alt="<%= c.alt %>" <%- locals.eager ? 'fetchpriority="high"' : 'loading="lazy"' %> decoding="async">
     <span class="exp-price"><span class="sr-only"><%= t('home.preco_pessoa_sr') %> </span>R$ <%= preco.toLocaleString(locals.intl || 'pt-BR') %> <small><%= t('home.por_pessoa') %></small></span>
-    <% if (c.ilustrativa && locals.full) { %><span class="exp-tag"><%= categoriaRotulo(e.category) %></span><% } %>
+    <% if (e.exemplo) { %><span class="exp-tag"><%= t('comunidade.exemplo') %></span><% } else if (c.ilustrativa && locals.full) { %><span class="exp-tag"><%= categoriaRotulo(e.category) %></span><% } %>
+    <button type="button" class="fav-btn<%= fav ? ' is-on' : '' %>" data-favorito="<%= e.id %>" aria-pressed="<%= fav %>"
+            aria-label="<%= t('favoritos.salvar_aria', { titulo: e.title }) %>"<%= locals.user ? '' : ' data-login' %>><i data-lucide="bookmark"></i></button>
   </figure>
   <p class="exp-loc"><i data-lucide="map-pin"></i> <%= e.location || t('home.brasil') %></p>
-  <h3 class="exp-title"><%= e.title %></h3>
+  <h3 class="exp-title"><a class="exp-link" href="/reservar/<%= encodeURIComponent(e.slug) %>"><%= e.title %></a></h3>
   <% if (locals.full && e.description) { %><p class="exp-desc"><%= e.description %></p><% } %>
   <% if (sc && !locals.full) { %>
     <ul class="score" aria-label="<%= t('home.score_aria') %>">
@@ -39,4 +44,4 @@
     <% } %>
     <% if (!sc || locals.full) { %><span><i data-lucide="badge-check"></i> <%= e.operador || 'AquaTrip' %></span><% } %>
   </p>
-</a>
+</article>

@@ -1,0 +1,23 @@
+/* ==============================================================
+   AquaTrip · Transição cartão -> página da experiência
+   ==============================================================
+   Fica no <head> (render-blocking) das páginas com cartões e da
+   página da experiência: o navegador decide se anima antes da
+   primeira pintura, e a regra precisa já estar carregada. O que
+   anima e o que é pulado decide o transicoes.js.
+   ============================================================== */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+}
+::view-transition-group(root) { animation-duration: 260ms; }
+::view-transition-group(vt-foto),
+::view-transition-group(vt-titulo) {
+  animation-duration: 440ms; animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+}
+/* A foto muda de proporção (4:5 no cartão, larga na página): cobre, sem esticar */
+::view-transition-old(vt-foto), ::view-transition-new(vt-foto) { height: 100%; object-fit: cover; }
+::view-transition-image-pair(vt-foto) { border-radius: var(--radius-lg); overflow: hidden; }
+/* Texto não pode esticar: cada versão mantém a proporção, presa no canto de cima */
+::view-transition-old(vt-titulo), ::view-transition-new(vt-titulo) {
+  height: 100%; width: auto; object-fit: none; object-position: left top;
+}

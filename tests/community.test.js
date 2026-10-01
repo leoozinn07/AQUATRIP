@@ -36,6 +36,15 @@ const api = (p, metodo, url, corpo) =>
   p.agent[metodo](url).set("X-CSRF-Token", p.csrf).set("Accept", "application/json").send(corpo);
 
 describe("experiência criada por usuário comum", () => {
+  it("descrição aceita a partir de 20 caracteres e recusa 19", async () => {
+    const dono = await novo();
+    const curta = await criar(dono, { title: "Descrição curta demais", description: "x".repeat(19) });
+    expect(curta.status).toBe(422);
+    expect(curta.body.error).toBe("Descreva a experiência com pelo menos 20 caracteres.");
+    const ok = await criar(dono, { title: "Descrição no limite", description: "Mergulho com amigos!" }); // 20
+    expect(ok.status).toBe(201);
+  });
+
   it("gratuita é publicada na hora e aparece no feed e na página", async () => {
     const dono = await novo();
     const r = await criar(dono);

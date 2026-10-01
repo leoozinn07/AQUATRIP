@@ -1,29 +1,26 @@
 /* ==============================================================
-   AquaTrip — Seed de serviços e horários de exemplo
-   Cria experiências reserváveis com slots nos próximos dias, para
-   que o fluxo de reserva possa ser testado de ponta a ponta.
+   AquaTrip — Seed das experiências oficiais e seus horários
+   Grava o catálogo operado pelo próprio AquaTrip
+   (app/lib/catalogoOficial.js) com horários nos próximos 30 dias,
+   para que o fluxo de reserva possa ser testado de ponta a ponta.
+   Idempotente: rodar de novo só completa a agenda. Não sobrescreve
+   preço nem descrição editados depois (a descrição só entra se
+   estiver vazia).
    Uso: npm run db:seed:services
    ============================================================== */
 require("dotenv").config({ quiet: true });
 const crypto = require("crypto");
 const db = require("../app/lib/db");
+const fuso = require("../app/lib/fuso");
+const { EXPERIENCIAS } = require("../app/lib/catalogoOficial");
 
-const SERVICES = [
-  { slug: "mergulho-noronha", title: "Batismo de mergulho em Fernando de Noronha", location: "Fernando de Noronha, PE", category: "mergulho", price_cents: 65000 },
-  { slug: "aquario-santos",   title: "Visita ao Aquário de Santos",                location: "Santos, SP",               category: "aquario",  price_cents: 6000 },
-  { slug: "caiaque-ilhabela", title: "Caiaque ao pôr do sol em Ilhabela",          location: "Ilhabela, SP",             category: "caiaque",  price_cents: 9500 },
-  { slug: "pesca-rio-negro",  title: "Pesca esportiva no Rio Negro",               location: "Manaus, AM",               category: "pesca",    price_cents: 42000 },
-];
+const DIAS = 30;
+const CAPACIDADE = 10;
 
-/* Meia-noite de hoje (fuso do servidor) + N dias + H horas, como
-   objeto Date — substitui o date_trunc('day', now()) + interval do
-   Postgres, que não tem equivalente direto simples no MySQL. */
-function dataSlot(diasAFrente, hora) {
-  const d = new Date();
-  d.setHours(0, 0, 0, 0);
-  d.setDate(d.getDate() + diasAFrente);
-  d.setHours(hora);
-  return d;
+/** "AAAA-MM-DD" de hoje + N dias, no fuso de operação. */
+function diaLocal(diasAFrente) {
+  const [a, m, d] = fuso.localDe(new Date()).data.split("-").map(Number);
+  return new Date(Date.UTC(a, m - 1, d + diasAFrente)).toISOString().slice(0, 10);
 }
 
 async function seed() {
@@ -31,35 +28,34 @@ async function seed() {
   try {
     await client.query("BEGIN");
 
-    for (const s of SERVICES) {
-      const novoId = crypto.randomUUID();
+    for (const s of EXPERIENCIAS) {
       await client.query(
-        `INSERT INTO services (id, slug, title, location, category, price_cents)
-         VALUES (?,?,?,?,?,?)
-         ON DUPLICATE KEY UPDATE title = VALUES(title)`,
-        [novoId, s.slug, s.title, s.location, s.category, s.price_cents]
+        `INSERT INTO services (id, slug, title, location, category, price_cents, description)
+         VALUES (?,?,?,?,?,?,?)
+         ON DUPLICATE KEY UPDATE title = VALUES(title),
+           description = COALESCE(description, VALUES(description))`,
+        [crypto.randomUUID(), s.slug, s.title, s.location, s.category, s.price_cents, s.description || null]
       );
-      const { rows } = await client.query(
-        `SELECT id, slug FROM services WHERE slug = ?`,
-        [s.slug]
-      );
+      const { rows } = await client.query(`SELECT id, slug FROM services WHERE slug = ?`, [s.slug]);
       const serviceId = rows[0].id;
 
-      // Slots: próximos 7 dias, às 09h e 14h.
-      for (let day = 1; day <= 7; day++) {
-        for (const hour of [9, 14]) {
+      // Horários nos próximos dias, na hora local de cada experiência.
+      for (let dia = 1; dia <= DIAS; dia++) {
+        for (const hora of s.horarios || ["09:00", "14:00"]) {
+          const inicio = fuso.paraUtc(diaLocal(dia), hora);
+          if (!inicio) continue; // hora que não existe (mudança de horário)
           await client.query(
             `INSERT IGNORE INTO service_slots (id, service_id, starts_at, capacity)
              VALUES (?, ?, ?, ?)`,
-            [crypto.randomUUID(), serviceId, dataSlot(day, hour), 10]
+            [crypto.randomUUID(), serviceId, inicio, s.capacidade || CAPACIDADE]
           );
         }
       }
-      console.log(`[seed] serviço pronto: ${rows[0].slug}`);
+      console.log(`[seed] experiência pronta: ${rows[0].slug}`);
     }
 
     await client.query("COMMIT");
-    console.log("[seed] serviços e horários criados.");
+    console.log(`[seed] ${EXPERIENCIAS.length} experiências oficiais com horários para ${DIAS} dias.`);
   } catch (err) {
     await client.query("ROLLBACK");
     throw err;

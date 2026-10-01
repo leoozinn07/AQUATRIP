@@ -18,7 +18,7 @@ AquaTrip é um marketplace de experiências aquáticas **no Brasil**: o cliente 
 Um lugar só para experiências *na água* pelo Brasil, com datas e vagas reais, reserva direta com quem organiza e o pagamento indo direto para o parceiro (Mercado Pago, com divisão automática).
 
 ## Operating Context
-- **É um simulador.** Pagamentos (PIX/cartão), a conexão com o Mercado Pago e os e-mails funcionam de ponta a ponta, mas simulados. Nenhum dinheiro real se move.
+- **Pagamentos são simulados.** PIX/cartão e a conexão com o Mercado Pago funcionam de ponta a ponta, mas nenhum dinheiro real se move. E-mails saem de verdade quando há provedor configurado (Brevo/SMTP); sem ele, ficam em tmp/emails.
 - Jornada do viajante: descobrir (busca e 6 categorias) → escolher data/horário com vaga → reservar (vaga segura por 15 min) → pagar → comprovante → avaliação com fotos.
 - Jornada do parceiro: `/parceiros` (landing) → conta → cadastro (CPF/CNPJ, área liberada na hora) → publicar experiências (no ar na hora; moderação depois, por denúncias) → conectar o Mercado Pago → operar reservas e vendas em `/parceiro`.
 - Admin único em `/admin` (moderação, auditoria, atendimento).
@@ -39,7 +39,7 @@ Um lugar só para experiências *na água* pelo Brasil, com datas e vagas reais,
 - Restrições visuais definidas pelo usuário: paleta de azuis do mar, temas claro e escuro, tipografia Inter, Open Sans ou Satoshi, seções com scroll e movimento de carrossel/slides. Meta de qualidade: nível Awwwards.
 
 ## Evidence on Hand
-- Experiências cadastradas (seed): Batismo de mergulho em Fernando de Noronha (PE), Visita ao Aquário de Santos (SP), Caiaque ao pôr do sol em Ilhabela (SP) e Pesca esportiva no Rio Negro (Manaus, AM), além das experiências do parceiro de demonstração.
+- Experiências oficiais (seed `npm run db:seed:services`, lista em `app/lib/catalogoOficial.js`): 23 experiências em destinos reais do Brasil, nas seis categorias, do Rio Negro a Noronha e de Florianópolis aos Lençóis Maranhenses. Capas com fotos do dono do projeto quando existem; sem foto, ilustração da categoria marcada como ilustrativa. Além delas, as experiências do parceiro de demonstração.
 - Imagens em `app/public/img/`. Muitas são de lugares fora do Brasil (Galápagos, Okinawa/Churaumi, Sydney, Dubai, Georgia Aquarium, Amalfi, fiordes, Quênia, Everest) e não podem ser apresentadas como destinos brasileiros. `amalfitana.webp` está sendo usada hoje para Ilhabela.
 - **Não existem** números reais de uso, depoimentos, avaliações reais agregadas nem imprensa. A área de prova social deve continuar marcada como exemplo e nada deve ser inventado como verdadeiro.
 - A comissão do parceiro vem de configuração (`comissao`).

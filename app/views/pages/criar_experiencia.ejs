@@ -45,7 +45,7 @@
 
         <div class="field">
           <label for="cxDesc"><%= t('criar.desc_label') %><span class="req" aria-hidden="true">*</span></label>
-          <textarea id="cxDesc" name="description" required minlength="30" maxlength="2000" data-counter rows="5"
+          <textarea id="cxDesc" name="description" required minlength="20" maxlength="2000" data-counter rows="5"
                     placeholder="<%= t('criar.desc_ph') %>" aria-describedby="cxDescHelp cxDescErr"><%= e.description || '' %></textarea>
           <span class="field-help" id="cxDescHelp"><%= t('criar.desc_help') %></span>
           <span class="field-error" id="cxDescErr" aria-live="polite"></span>

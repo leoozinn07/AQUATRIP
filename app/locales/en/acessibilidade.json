@@ -1,0 +1,12 @@
+{
+  "libras": {
+    "ligar": "Turn on Brazilian Sign Language (VLibras)",
+    "desligar": "Turn off Brazilian Sign Language",
+    "titulo": "Libras (Brazilian Sign Language)",
+    "texto": "VLibras, by the Brazilian Federal Government, translates the site's text into Brazilian Sign Language with a 3D avatar. When turned on, pages load VLibras from gov.br servers.",
+    "estado_on": "On in this browser.",
+    "estado_off": "Off.",
+    "botao_on": "Turn on Libras",
+    "botao_off": "Turn off Libras"
+  }
+}

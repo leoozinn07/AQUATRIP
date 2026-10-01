@@ -10,15 +10,14 @@ const auditService = require("../services/auditService");
 const recoveryService = require("../services/accountRecoveryService");
 const twoFactor = require("../services/twoFactorService");
 const { AuditAction } = auditService;
+const senhaRegra = require("../lib/senha");
 
 const cadastroSchema = z
   .object({
     nome: z.string().trim().min(2, "Informe seu nome completo.").max(120),
     email: z.string().trim().email("Informe um e-mail válido.").max(255),
-    senha: z
-      .string()
-      .min(8, "A senha precisa ter pelo menos 8 caracteres.")
-      .max(72), // 72 bytes é o limite prático do argon2/bcrypt para senha
+    // 8+ caracteres com letra, número e caractere especial (app/lib/senha.js)
+    senha: senhaRegra.schema(),
     // Aceite explícito dos Termos de Uso e da Política de Privacidade
     // (caixa desmarcada por padrão: consentimento tem que ser ativo).
     aceite: z.literal("on", { error: "Para criar a conta, aceite os Termos de Uso e a Política de Privacidade." }),

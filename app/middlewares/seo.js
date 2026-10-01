@@ -7,7 +7,7 @@
    ============================================================== */
 const PRIVADO = [
   /^\/admin/, /^\/gestao/, /^\/api\//, /^\/conta/, /^\/perfil/,
-  /^\/minhas-reservas/, /^\/reservas\//, /^\/ingressos/, /^\/viagens/,
+  /^\/minhas-reservas/, /^\/favoritos/, /^\/reservas\//, /^\/ingressos/, /^\/viagens/,
   /^\/avaliacao/, /^\/configuracoes/, /^\/login/, /^\/cadastro/,
   /^\/esqueci-senha/, /^\/redefinir-senha/, /^\/verificar-email/,
   /^\/dev\//, /^\/webhooks\//, /^\/healthz/, /^\/readyz/, /^\/parceiro(\/|$)/,

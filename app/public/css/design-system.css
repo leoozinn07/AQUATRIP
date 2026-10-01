@@ -349,6 +349,28 @@ p { text-wrap: pretty; }
 .btn .arrow { transition: transform 200ms var(--ease-out); }
 @media (hover: hover) and (pointer: fine) { .btn:hover .arrow, .btn-primary:hover .arrow { transform: translateX(3px); } }
 
+/* Setas de carrossel: as duas numa mini caixa arredondada. O raio de
+   dentro (10px) é o de fora (14px) menos o respiro (4px), então os
+   cantos ficam paralelos. */
+.slider-nav {
+  display: inline-flex; align-items: center; gap: 4px; padding: 4px; flex: 0 0 auto;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.slider-btn {
+  width: var(--tap-min); height: var(--tap-min); display: grid; place-items: center;
+  border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--ink); cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 160ms var(--ease-out), background-color 160ms ease, opacity 160ms ease;
+}
+.slider-btn svg { width: 20px; height: 20px; stroke-width: 1.8; }
+.slider-btn:active:not(:disabled) { transform: scale(0.95); }
+.slider-btn:disabled { opacity: .35; cursor: default; }
+.slider-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+@media (hover: hover) and (pointer: fine) {
+  .slider-btn:hover:not(:disabled) { background: var(--accent-soft); color: var(--accent-ink); }
+}
+
 .icon-btn {
   width: var(--tap-min); height: var(--tap-min); display: inline-grid; place-items: center; flex: 0 0 auto;
   border-radius: var(--radius-pill); border: 1px solid var(--line); background: transparent; color: inherit; cursor: pointer;
@@ -549,6 +571,35 @@ main { flex: 1 0 auto; }
 .exp-media { position: relative; border-radius: var(--radius-lg); overflow: hidden; aspect-ratio: 4 / 5; background: var(--d3); margin: 0; }
 .exp-media img { width: 100%; height: 100%; object-fit: cover; transition: transform 900ms var(--ease-out); }
 @media (hover: hover) and (pointer: fine) { .exp-card:hover .exp-media img { transform: scale(1.04); } }
+/* Cartão inteiro clicável: o link do título se estende por cima do
+   cartão (::after). A foto fica acima desse véu, mas deixa o clique
+   passar (pointer-events), menos no botão de favoritar. */
+.exp-card { position: relative; }
+.exp-link, .exp-link:hover { color: inherit; text-decoration: none; }
+.exp-link::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: var(--radius-lg); }
+.exp-link:focus-visible { outline: none; }
+.exp-link:focus-visible::after { outline: 2px solid var(--accent); outline-offset: 4px; }
+.exp-card .exp-media { z-index: 2; pointer-events: none; }
+/* Apertar o favorito não "afunda" o cartão inteiro */
+.exp-card:has(.fav-btn:active) { transform: none; }
+.fav-btn {
+  position: absolute; right: 12px; bottom: 12px; z-index: 1; pointer-events: auto;
+  width: var(--tap-min); height: var(--tap-min); display: grid; place-items: center;
+  border: 0; border-radius: var(--radius-pill); cursor: pointer;
+  background: rgba(3, 23, 42, .62); color: #f2fbfd;
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 160ms var(--ease-out), background-color 160ms ease, color 160ms ease;
+}
+.fav-btn svg { width: 19px; height: 19px; stroke-width: 1.9; }
+.fav-btn.is-on { background: #f2fbfd; color: #062238; }
+.fav-btn.is-on svg { fill: currentColor; }
+.fav-btn:active { transform: scale(0.92); }
+.fav-btn:focus-visible { outline: 2px solid #f2fbfd; outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine) {
+  .fav-btn:hover { background: rgba(3, 23, 42, .82); }
+  .fav-btn.is-on:hover { background: #ffffff; }
+}
 .exp-price {
   position: absolute; right: 12px; top: 12px; padding: 7px 12px; border-radius: var(--radius-pill);
   background: rgba(3, 23, 42, .62); color: #f2fbfd; font-weight: 600; font-size: .92rem;
@@ -584,6 +635,25 @@ main { flex: 1 0 auto; }
   .grid-cards > li:first-child:not(:only-child) .exp-media { aspect-ratio: 16 / 9.4; }
 }
 .grid-cards .exp-media { aspect-ratio: 4 / 3.3; }
+/* Requisitos da senha (cadastro e nova senha): cada item acende quando atendido */
+.senha-regras {
+  list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 4px 16px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 170px), 1fr));
+  font-size: var(--text-sm, .88rem); color: var(--ink-2);
+}
+.senha-regras li { display: flex; align-items: center; gap: 8px; transition: color 160ms ease; }
+.senha-regras li::before {
+  content: ""; flex: 0 0 auto; width: 16px; height: 16px; border-radius: 50%;
+  border: 1.5px solid var(--line-strong); transition: background-color 160ms ease, border-color 160ms ease;
+}
+.senha-regras li.is-ok { color: var(--success); }
+.senha-regras li.is-ok::before {
+  border-color: var(--success); background: var(--success)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 8.2l2.3 2.3 4.7-4.9' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 14px no-repeat;
+}
+
+/* Página de favoritos */
+.fav-main { padding-block: clamp(8px, 2vw, 24px) clamp(48px, 7vw, 96px); }
 
 /* Estado vazio */
 .empty {

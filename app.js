@@ -76,6 +76,9 @@ app.use(
   })
 );
 
+/* VLibras: amplia a CSP só para quem ligou a tradução para Libras. */
+app.use(require("./app/middlewares/vlibras").vlibras);
+
 /* Log HTTP estruturado (pino). Em teste o nível é "silent". */
 app.use(httpLogger);
 
@@ -152,6 +155,8 @@ app.use(i18n.middleware);
 app.use(require("./app/middlewares/seo").seoPadrao);
 app.use(require("./app/middlewares/flash").umaVez);
 app.use(require("./app/controllers/settingsController").exigirAceite);
+/* Favoritos de quem está logado: os cartões já nascem marcados. */
+app.use(require("./app/controllers/favoritoController").carregarIds);
 
 let rotas = require("./app/routes/router");
 app.use("/", rotas);

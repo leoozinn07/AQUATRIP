@@ -49,9 +49,33 @@ document.addEventListener('DOMContentLoaded', () => {
         return true;
     }
 
+    // Cadastro e nova senha: 8+ caracteres, letra, número e caractere
+    // especial (mesma regra do servidor, app/lib/senha.js). O login não
+    // tem a lista e só confere o tamanho, como antes.
+    const regras = document.querySelector('[data-senha-regras]');
+    const TESTES = {
+        tamanho: (s) => s.length >= 8,
+        letra: (s) => /\p{L}/u.test(s),
+        numero: (s) => /\p{N}/u.test(s),
+        especial: (s) => /[^\p{L}\p{N}\s]/u.test(s),
+    };
+    function senhaForte(s) {
+        let ok = true;
+        Object.keys(TESTES).forEach((regra) => {
+            const passou = TESTES[regra](s);
+            if (!passou) ok = false;
+            const li = regras && regras.querySelector('[data-regra="' + regra + '"]');
+            if (li) {
+                li.classList.toggle('is-ok', passou);
+                li.setAttribute('aria-label', li.textContent.trim() + ': ' + (passou ? regras.dataset.ok : regras.dataset.falta));
+            }
+        });
+        return ok;
+    }
+
     function mainPasswordValidate() {
         if (!inputSenha) return true;
-        if (inputSenha.value.length < 8) {
+        if (regras ? !senhaForte(inputSenha.value) : inputSenha.value.length < 8) {
             setError(inputSenha);
             return false;
         }

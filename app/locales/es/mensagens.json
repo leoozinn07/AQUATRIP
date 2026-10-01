@@ -65,7 +65,10 @@
     "Banco de dados indisponível": "Base de datos no disponible",
     "Algo deu errado": "Algo salió mal",
     "Estamos com uma instabilidade momentânea. Tente de novo em instantes.": "Estamos con una inestabilidad momentánea. Inténtalo de nuevo en instantes.",
-    "Ocorreu um erro inesperado. Se precisar falar com o suporte, informe o código abaixo.": "Ocurrió un error inesperado. Si necesitas contactar al soporte, indica el código a continuación."
+    "Ocorreu um erro inesperado. Se precisar falar com o suporte, informe o código abaixo.": "Ocurrió un error inesperado. Si necesitas contactar al soporte, indica el código a continuación.",
+    "A senha precisa ter pelo menos uma letra.": "La contraseña debe tener al menos una letra.",
+    "A senha precisa ter pelo menos um número.": "La contraseña debe tener al menos un número.",
+    "A senha precisa ter pelo menos um caractere especial (como ! @ # $ %).": "La contraseña debe tener al menos un carácter especial (como ! @ # $ %)."
   },
   "msg_padroes": {
     "Não há vagas suficientes nesse horário (restam {n}).": "No hay cupos suficientes en ese horario (quedan {n}).",

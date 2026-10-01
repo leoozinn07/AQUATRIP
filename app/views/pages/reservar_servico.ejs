@@ -9,7 +9,10 @@
   <meta name="csrf-token" content="<%= csrfToken %>">
   <link rel="stylesheet" href="/css/experiencia.css" />
   <link rel="stylesheet" href="/css/comunidade.css" />
+  <%# A transição de chegada espera a capa existir antes da primeira pintura %>
+  <link rel="expect" href="#xpHero" blocking="render">
   <script src="/js/theme.js"></script>
+  <link rel="stylesheet" href="/css/transicoes.css" />
 </head>
 <body>
 
@@ -37,7 +40,7 @@
       <span aria-current="page"><%= service.title %></span>
     </nav>
 
-    <figure class="xp-hero">
+    <figure class="xp-hero" id="xpHero">
       <img src="<%= c.src %>" alt="<%= c.alt %>" fetchpriority="high">
       <% if (c.ilustrativa) { %><figcaption><%= t('exp.imagem_ilustrativa') %></figcaption><% } %>
     </figure>
@@ -62,6 +65,11 @@
         <div class="sx-bar" data-servico="<%= service.id %>">
           <button type="button" class="sx-btn<%= social.meu.curtiu ? ' is-on' : '' %>" data-curtir="<%= service.id %>" aria-pressed="<%= social.meu.curtiu %>" <%= logado ? '' : 'data-login' %>>
             <i data-lucide="heart"></i> <span><%= t('social.curtir') %></span> <span class="num sx-n" data-contagem><%= social.curtidas %></span>
+          </button>
+          <% const favorito = Boolean(locals.favoritos && locals.favoritos.has(service.id)); %>
+          <button type="button" class="sx-btn<%= favorito ? ' is-on' : '' %>" data-favorito="<%= service.id %>" aria-pressed="<%= favorito %>"
+                  data-rotulo-on="<%= t('favoritos.salvo') %>" data-rotulo-off="<%= t('favoritos.salvar') %>" <%= logado ? '' : 'data-login' %>>
+            <i data-lucide="bookmark"></i> <span data-fav-rotulo><%= favorito ? t('favoritos.salvo') : t('favoritos.salvar') %></span>
           </button>
           <% if (comunidade && !eDono) { %>
             <button type="button" class="sx-btn<%= social.meu.interesse ? ' is-on' : '' %>" data-interesse="<%= service.id %>" aria-pressed="<%= social.meu.interesse %>" <%= logado ? '' : 'data-login' %>>

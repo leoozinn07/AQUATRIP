@@ -12,6 +12,10 @@
   <link rel="preload" href="/fonts/inter-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/img/noronha-hero.webp" as="image" fetchpriority="high">
   <link rel="stylesheet" href="/css/index.css">
+  <link rel="stylesheet" href="/css/transicoes.css" />
+  <%# Na volta da experiência, a transição precisa achar o cartão antes da primeira pintura:
+      espera o elemento logo depois da grade, com todos os cartões já lidos %>
+  <link rel="expect" href="#destNota" blocking="render">
 </head>
 <body data-hero-header class="home">
 
@@ -76,10 +80,14 @@
             </div>
             <div class="cat-foot">
               <p><strong><%= categoriaRotulo(c.chave) %>.</strong> <%= t('home.cat_chamada.' + c.chave) %></p>
-              <span class="cat-count"><%= c.n ? t('home.cat_n', { n: c.n }) : t('home.em_breve') %></span>
+              <span class="cat-count"><%= c.n ? t(c.n === 1 ? 'home.cat_um' : 'home.cat_n', { n: c.n }) : t('home.em_breve') %></span>
             </div>
           </a>
         <% }); %>
+      </div>
+      <div class="slider-nav cats-nav" role="group" aria-label="<%= t('home.cats_nav_aria') %>">
+        <button class="slider-btn" type="button" id="catsPrev" aria-label="<%= t('home.cats_anteriores') %>" aria-controls="catsTrack"><i data-lucide="arrow-left"></i></button>
+        <button class="slider-btn" type="button" id="catsNext" aria-label="<%= t('home.cats_proximas') %>" aria-controls="catsTrack"><i data-lucide="arrow-right"></i></button>
       </div>
     </div>
   </section>
@@ -88,11 +96,15 @@
   <section class="dest" id="destinos" data-depth="12" data-label="Destinos" aria-labelledby="t-dest">
     <div class="wrap dest-head">
       <h2 class="display h-l" id="t-dest"><%= t('home.dest_titulo') %></h2>
+      <% if (destaques.length) { %>
       <div class="carousel-ctrl">
         <div class="carousel-progress" aria-hidden="true"><b id="carBar"></b></div>
-        <button class="icon-btn" type="button" id="carPrev" aria-label="<%= t('home.dest_anteriores') %>" aria-controls="carousel"><i data-lucide="arrow-left"></i></button>
-        <button class="icon-btn" type="button" id="carNext" aria-label="<%= t('home.dest_proximos') %>" aria-controls="carousel"><i data-lucide="arrow-right"></i></button>
+        <div class="slider-nav" role="group" aria-label="<%= t('home.dest_nav_aria') %>">
+          <button class="slider-btn" type="button" id="carPrev" aria-label="<%= t('home.dest_anteriores') %>" aria-controls="carousel"><i data-lucide="arrow-left"></i></button>
+          <button class="slider-btn" type="button" id="carNext" aria-label="<%= t('home.dest_proximos') %>" aria-controls="carousel"><i data-lucide="arrow-right"></i></button>
+        </div>
       </div>
+      <% } %>
     </div>
     <% if (destaques.length) { %>
       <div class="carousel" id="carousel" tabindex="0" role="region" aria-label="<%= t('home.dest_regiao_aria') %>">
@@ -104,7 +116,7 @@
           <span class="link-arrow"><%= t('home.abrir_catalogo') %> <i data-lucide="arrow-right"></i></span>
         </a>
       </div>
-      <p class="wrap dest-note"><%= t('home.dest_nota') %></p>
+      <p class="wrap dest-note" id="destNota"><%= t('home.dest_nota') %></p>
     <% } else { %>
       <div class="wrap"><p class="lead"><%- t('home.dest_vazio_html') %></p></div>
     <% } %>
@@ -156,7 +168,7 @@
           <% lugares.forEach(function (l) { %>
             <li><button type="button" data-place="<%= l.nome %>" aria-pressed="false">
               <strong><%= l.nome %></strong>
-              <span class="n"><%= t('home.lugar_n', { n: l.n }) %></span>
+              <span class="n"><%= t(l.n === 1 ? 'home.lugar_um' : 'home.lugar_n', { n: l.n }) %></span>
               <% if (l.coord) { %><span class="mono"><%= l.coord %> · <%= l.sub %></span><% } %>
             </button></li>
           <% }); %>
@@ -252,5 +264,6 @@
 <script src="/vendor/ScrollTrigger.min.js" defer></script>
 <script src="/vendor/lenis.min.js" defer></script>
 <script src="/js/home.js" defer></script>
+<script src="/js/agua.js" defer></script>
 </body>
 </html>

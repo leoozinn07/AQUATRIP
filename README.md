@@ -4,12 +4,12 @@ Marketplace de experiências aquáticas — praias, mergulho, caiaque, pesca,
 aquários e expedições. Clientes reservam e pagam; parceiros publicam
 experiências e recebem com a comissão do AquaTrip descontada na hora.
 
-> **Este site é um simulador.** Pagamentos (PIX e cartão), a conexão dos
-> parceiros com o Mercado Pago e o envio de e-mails funcionam de ponta a
-> ponta, mas **simulados**: nenhum dinheiro real é movimentado e nenhum
-> e-mail sai do servidor.
+> **Os pagamentos são simulados.** PIX, cartão e a conexão dos parceiros com o
+> Mercado Pago funcionam de ponta a ponta, mas nenhum dinheiro real é
+> movimentado. Os **e-mails** saem de verdade quando há um provedor
+> configurado (veja "E-mails reais"); sem ele, ficam gravados em `tmp/emails`.
 
-Node.js 22 · Express · EJS · MySQL 8.0 · 574 testes automatizados
+Node.js 22 · Express · EJS · MySQL 8.0 · mais de 600 testes automatizados
 
 Design: veja [docs/design.md](docs/design.md) (tokens, tipografia, movimento e fotos provisórias).
 
@@ -122,6 +122,26 @@ teste** (nenhum valor real é cobrado):
 Também dá para ver o ingresso, cancelar com estorno, avaliar com fotos depois da data,
 exportar ou pedir exclusão dos dados (LGPD).
 
+**Favoritos:** o marcador na foto de qualquer cartão (ou "Favoritar" na página
+da experiência) guarda a experiência em `/favoritos`, uma lista que só a
+própria pessoa vê. Visitante é levado ao login e volta para onde estava.
+
+**Catálogo:** `npm run db:seed:services` grava as 23 experiências operadas pelo
+AquaTrip (lista em `app/lib/catalogoOficial.js`), em destinos reais das seis
+categorias, com horários para os próximos 30 dias. Rodar de novo só completa a
+agenda. Para acrescentar uma experiência oficial, edite essa lista (e, se for
+cidade nova, o pino em `LUGARES`, no `homeController.js`).
+
+**Abertura com água:** na home, a foto do topo reage ao mouse e ao toque como
+superfície de água (WebGL2, sem biblioteca externa, em `app/public/js/agua.js`).
+Com "reduzir movimento", economia de dados ou sem WebGL2, fica a foto parada.
+
+**Libras:** o botão com a mão, no cabeçalho (ou em Configurações), liga o
+[VLibras](https://www.gov.br/governodigital/pt-br/vlibras), o tradutor de
+Libras do Governo Federal. Ele só carrega para quem liga: sem a opção, o site
+continua sem nenhum script de terceiro. Ligado, a CSP libera apenas
+`vlibras.gov.br` (ver `app/middlewares/vlibras.js`).
+
 **Como parceiro:** candidatar-se (aceita CNPJ alfanumérico, em vigor desde
 julho/2026), conectar o Mercado Pago pelo simulador de consentimento, cadastrar
 experiências e horários (publicadas na hora, moderadas depois), ver quem reservou (com o código
@@ -156,8 +176,37 @@ usuários; faturamento com exportação CSV; trilha de auditoria.
 |---|---|---|
 | Pagamentos | Provedor simulado com as mesmas regras do real | `PAYMENT_PROVIDER=mercadopago` + credenciais — ver `docs/ativar-mercado-pago.md` |
 | Conexão do parceiro | Tela local imitando o consentimento do Mercado Pago | Aplicação marketplace no Mercado Pago |
-| E-mails | Gravados em `tmp/emails` e listados em `/dev/emails` | SMTP (`MAIL_TRANSPORT=smtp`) |
+| E-mails | Gravados em `tmp/emails` e listados em `/dev/emails` (padrão sem configuração) | **Já envia de verdade** com `BREVO_API_KEY` (API HTTPS, funciona no Railway) ou SMTP — ver "E-mails reais" abaixo |
 | Imagens | Disco local (`uploads/`) | Storage de objetos com várias instâncias |
+
+## E-mails reais
+
+O site manda e-mail de verdade quando há um provedor no `.env` (a chave fica
+só no servidor, nunca no Git):
+
+1. Crie uma conta grátis em [brevo.com](https://www.brevo.com) (300 e-mails/dia).
+2. Em **Senders, domains & dedicated IPs**, verifique o e-mail que vai como remetente.
+3. Em **SMTP & API → API Keys**, gere uma chave.
+4. No `.env` (no Railway: aba *Variables* do serviço):
+   ```
+   MAIL_TRANSPORT=brevo
+   BREVO_API_KEY=a-chave-gerada
+   MAIL_FROM=AquaTrip <o-email-verificado@exemplo.com>
+   PUBLIC_BASE_URL=https://endereco-do-seu-site
+   ```
+5. Teste: `npm run email:testar -- seu@email.com`
+
+O Railway bloqueia SMTP nos planos Trial/Hobby, por isso a Brevo vai pela API
+HTTPS. Em servidor próprio (VPS) também dá para usar `MAIL_TRANSPORT=smtp` com
+`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER` e `SMTP_PASS`.
+
+O que sai por e-mail: confirmação de conta, redefinição e troca de senha, 2FA,
+cadastro de parceiro, avaliações e, a cada reserva confirmada, cancelada ou
+estornada, um aviso para quem reservou (com o código do ingresso) e para quem
+organiza (parceiro ou criador da viagem; experiência do próprio AquaTrip avisa
+`CONTACT_INBOX`). Como o pagamento é simulado, esses e-mails dizem que nenhum
+valor real foi cobrado. Em produção sem provedor, o log do servidor avisa
+"E-MAILS DESLIGADOS".
 
 ## Testes
 

@@ -1,0 +1,12 @@
+{
+  "libras": {
+    "ligar": "Activar traducción a Libras (VLibras)",
+    "desligar": "Desactivar traducción a Libras",
+    "titulo": "Libras (lengua de señas brasileña)",
+    "texto": "VLibras, del Gobierno Federal de Brasil, traduce el texto del sitio a la lengua de señas brasileña con un avatar 3D. Al activarlo, las páginas cargan VLibras desde los servidores de gov.br.",
+    "estado_on": "Activado en este navegador.",
+    "estado_off": "Desactivado.",
+    "botao_on": "Activar Libras",
+    "botao_off": "Desactivar Libras"
+  }
+}

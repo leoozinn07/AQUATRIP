@@ -39,8 +39,15 @@
         </section>
         <section class="field">
           <label for="senha"><%= t('auth.senha_label') %></label>
-          <input type="password" id="senha" name="senha" class="inputs required" required autocomplete="new-password" aria-describedby="senha-ajuda">
+          <input type="password" id="senha" name="senha" class="inputs required" required autocomplete="new-password" aria-describedby="senha-ajuda senha-regras">
           <span class="field-help" id="senha-ajuda"><%= t('auth.senha_ajuda') %></span>
+          <ul class="senha-regras" id="senha-regras" data-senha-regras aria-label="<%= t('auth.regras_aria') %>"
+              data-ok="<%= t('auth.regra_ok') %>" data-falta="<%= t('auth.regra_falta') %>">
+            <li data-regra="tamanho"><%= t('auth.regra_tamanho') %></li>
+            <li data-regra="letra"><%= t('auth.regra_letra') %></li>
+            <li data-regra="numero"><%= t('auth.regra_numero') %></li>
+            <li data-regra="especial"><%= t('auth.regra_especial') %></li>
+          </ul>
           <span class="span-required field-error"><%= t('auth.senha_minima') %></span>
         </section>
         <section class="field">

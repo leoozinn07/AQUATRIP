@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="<%= locals.htmlLang || 'pt-BR' %>">
+<head>
+  <meta name="csrf-token" content="<%= csrfToken %>">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#eef6f8" />
+  <title><%= seo.titulo %></title>
+  <script src="/js/theme.js"></script>
+  <link rel="stylesheet" href="/css/transicoes.css" />
+  <%# Na volta da experiência, a transição precisa achar o cartão antes da primeira pintura:
+      espera o elemento logo depois da grade, com todos os cartões já lidos %>
+  <link rel="expect" href="#favVazio" blocking="render">
+</head>
+<body>
+
+<%- include('../partials/header') %>
+
+<main id="main-content" class="fav-main">
+  <div class="container">
+    <header class="page-head">
+      <h1 class="display h-l"><%= t('favoritos.titulo') %></h1>
+      <p class="lead"><%= t('favoritos.lead') %></p>
+    </header>
+
+    <ol class="grid-cards" id="favLista"<%= experiencias.length ? '' : ' hidden' %>>
+      <% experiencias.forEach(function (e, i) { %>
+        <li><%- include('../partials/exp-card', { e: e, full: true, meta: true, eager: i < 2 }) %></li>
+      <% }); %>
+    </ol>
+
+    <div class="empty" id="favVazio"<%= experiencias.length ? ' hidden' : '' %>>
+      <div class="empty-body">
+        <p class="h-m"><%= t('favoritos.vazio_titulo') %></p>
+        <p><%= t('favoritos.vazio_texto') %></p>
+        <p><a class="btn-primary" href="/reservar"><%= t('favoritos.explorar') %></a></p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>
+</body>
+</html>

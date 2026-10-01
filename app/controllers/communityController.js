@@ -33,7 +33,7 @@ const texto = (min, max, msgMin) => z.string().trim().min(min, msgMin).max(max, 
 
 const experienciaSchema = z.object({
   title: texto(6, 80, "O título precisa ter pelo menos 6 caracteres."),
-  description: texto(30, 2000, "Descreva a experiência com pelo menos 30 caracteres."),
+  description: texto(20, 2000, "Descreva a experiência com pelo menos 20 caracteres."),
   location: texto(3, 100, "Informe o destino."),
   category: z.enum([...CATEGORIAS], { message: "Escolha o tipo de experiência." }),
   date: DATA,

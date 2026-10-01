@@ -4,16 +4,19 @@
    Mesma estratégia do gateway de pagamento: uma fronteira só, para
    trocar de provedor sem mexer no resto do sistema.
 
-   Sem SMTP configurado, o transporte "dev" escreve o e-mail em
-   ./tmp/emails/ e registra no console. O fluxo inteiro (incluindo o
-   link com token) pode ser testado sem provedor nenhum — e, o que
-   importa mais, sem enviar e-mail de verdade para endereço real
-   durante o desenvolvimento.
+   Transportes (MAIL_TRANSPORT):
+     brevo  envio real pela API HTTPS da Brevo (BREVO_API_KEY). Funciona
+            em qualquer hospedagem: usa a porta 443, a mesma do site. É
+            o caminho no Railway, que bloqueia SMTP nos planos menores.
+     smtp   envio real por SMTP (SMTP_HOST, SMTP_PORT, SMTP_USER,
+            SMTP_PASS), para servidor próprio/VPS.
+     dev    grava o e-mail em ./tmp/emails/ e não envia nada. Padrão
+            sem configuração: dá para testar o fluxo inteiro (inclusive
+            o link com token) sem mandar e-mail para endereço real.
+   Vazio = escolhe pelo que estiver configurado (Brevo > SMTP > dev).
 
-   Variáveis:
-     MAIL_TRANSPORT=dev|smtp   (vazio = dev)
-     MAIL_FROM
-     SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS
+   MAIL_FROM: remetente, "Nome <email>". Na Brevo, o e-mail precisa
+   estar verificado como remetente na conta.
    ============================================================== */
 const fs = require("fs");
 const log = require("../lib/logger").forModule("email");
@@ -26,7 +29,22 @@ const MAIL_DIR = path.join(process.cwd(), "tmp", "emails");
 function transportName() {
   const explicit = (process.env.MAIL_TRANSPORT || "").trim().toLowerCase();
   if (explicit) return explicit;
+  if (process.env.BREVO_API_KEY) return "brevo";
   return process.env.SMTP_HOST ? "smtp" : "dev";
+}
+
+/** "AquaTrip <oi@site.com>" -> { name, email } */
+function remetente() {
+  const bruto = fromAddress();
+  const m = /^\s*"?([^"<]*?)"?\s*<([^>]+)>\s*$/.exec(bruto);
+  return m ? { name: m[1].trim() || "AquaTrip", email: m[2].trim() } : { name: "AquaTrip", email: bruto.trim() };
+}
+
+/** Texto do usuário dentro do HTML do e-mail (título, nome) sempre escapado. */
+function esc(v) {
+  return String(v == null ? "" : v)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
 
 function fromAddress() {
@@ -65,28 +83,52 @@ async function sendViaDev({ to, subject, text, html, template }) {
   return { file };
 }
 
-/** Envio real por SMTP. Exige nodemailer instalado. */
-async function sendViaSmtp({ to, subject, text, html }) {
-  let nodemailer;
-  try {
-    nodemailer = require("nodemailer");
-  } catch {
-    throw new Error(
-      "[mail] MAIL_TRANSPORT=smtp exige o pacote nodemailer. Rode: npm install nodemailer"
-    );
-  }
-
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT || 587),
-    secure: Number(process.env.SMTP_PORT) === 465,
-    auth:
-      process.env.SMTP_USER && process.env.SMTP_PASS
-        ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
-        : undefined,
+/** Envio real pela API HTTPS da Brevo (porta 443). */
+async function sendViaBrevo({ to, subject, text, html }) {
+  const chave = process.env.BREVO_API_KEY;
+  if (!chave) throw new Error("[mail] MAIL_TRANSPORT=brevo exige BREVO_API_KEY no .env.");
+  const res = await fetch("https://api.brevo.com/v3/smtp/email", {
+    method: "POST",
+    headers: { accept: "application/json", "content-type": "application/json", "api-key": chave },
+    body: JSON.stringify({
+      sender: remetente(),
+      to: [{ email: to }],
+      subject,
+      textContent: text || undefined,
+      htmlContent: html || undefined,
+    }),
+    signal: AbortSignal.timeout(15000),
   });
+  if (!res.ok) {
+    // Corpo do erro da Brevo é curto e não contém a chave
+    const detalhe = (await res.text().catch(() => "")).slice(0, 300);
+    throw new Error(`[mail] Brevo respondeu ${res.status}: ${detalhe}`);
+  }
+  return res.json().catch(() => ({}));
+}
 
-  return transporter.sendMail({ from: fromAddress(), to, subject, text, html });
+/** Envio real por SMTP (nodemailer). A conexão é reaproveitada. */
+let transportadorSmtp = null;
+function smtp() {
+  if (!transportadorSmtp) {
+    const nodemailer = require("nodemailer");
+    const porta = Number(process.env.SMTP_PORT || 587);
+    transportadorSmtp = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: porta,
+      secure: porta === 465,
+      requireTLS: porta !== 465, // 587: STARTTLS obrigatório, senha nunca em texto puro
+      auth:
+        process.env.SMTP_USER && process.env.SMTP_PASS
+          ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
+          : undefined,
+    });
+  }
+  return transportadorSmtp;
+}
+async function sendViaSmtp({ to, subject, text, html }) {
+  if (!process.env.SMTP_HOST) throw new Error("[mail] MAIL_TRANSPORT=smtp exige SMTP_HOST no .env.");
+  return smtp().sendMail({ from: fromAddress(), to, subject, text, html });
 }
 
 /**
@@ -100,7 +142,9 @@ async function send({ to, subject, text, html, template = null }) {
   let erro = null;
 
   try {
-    if (transporte === "smtp") {
+    if (transporte === "brevo") {
+      await sendViaBrevo({ to, subject, text, html });
+    } else if (transporte === "smtp") {
       await sendViaSmtp({ to, subject, text, html });
     } else {
       await sendViaDev({ to, subject, text, html, template });
@@ -218,6 +262,8 @@ async function sendPasswordChanged({ to, name }) {
 module.exports = {
   send,
   transportName,
+  layout,
+  esc,
   sendPasswordReset,
   sendEmailVerification,
   sendPasswordChanged,
