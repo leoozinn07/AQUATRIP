@@ -65,7 +65,10 @@
     "Banco de dados indisponível": "Database unavailable",
     "Algo deu errado": "Something went wrong",
     "Estamos com uma instabilidade momentânea. Tente de novo em instantes.": "We're having a momentary hiccup. Please try again shortly.",
-    "Ocorreu um erro inesperado. Se precisar falar com o suporte, informe o código abaixo.": "An unexpected error occurred. If you need to contact support, provide the code below."
+    "Ocorreu um erro inesperado. Se precisar falar com o suporte, informe o código abaixo.": "An unexpected error occurred. If you need to contact support, provide the code below.",
+    "A senha precisa ter pelo menos uma letra.": "The password must have at least one letter.",
+    "A senha precisa ter pelo menos um número.": "The password must have at least one number.",
+    "A senha precisa ter pelo menos um caractere especial (como ! @ # $ %).": "The password must have at least one special character (like ! @ # $ %)."
   },
   "msg_padroes": {
     "Não há vagas suficientes nesse horário (restam {n}).": "Not enough spots at this time ({n} left).",

@@ -46,6 +46,13 @@ async function main() {
   }
   ok("segredos configurados");
 
+  // E-mail: avisa (não bloqueia) se nada vai sair de verdade
+  const transporte = require("../app/services/mailService").transportName();
+  if (transporte === "brevo" && !process.env.BREVO_API_KEY) aviso("MAIL_TRANSPORT=brevo sem BREVO_API_KEY no .env");
+  else if (transporte === "smtp" && !process.env.SMTP_HOST) aviso("MAIL_TRANSPORT=smtp sem SMTP_HOST no .env");
+  else if (transporte === "dev") aviso("e-mails em modo dev: são gravados em tmp/emails, ninguém recebe (veja BREVO_API_KEY no .env.example)");
+  else ok(`e-mail real ligado (${transporte}) — teste com: npm run email:testar -- seu@email.com`);
+
   // 2. DATABASE_URL
   let u;
   try { u = new URL(process.env.DATABASE_URL); } catch {

@@ -34,6 +34,14 @@ const expireTimer = setInterval(() => {
 
 const server = app.listen(port, () => {
   logger.info({ port }, `servidor ouvindo em http://localhost:${port}`);
+  // Em produção, e-mail "dev" quer dizer que ninguém recebe nada
+  // (recuperação de senha, reservas): avisa alto no log do deploy.
+  const transporte = require("./app/services/mailService").transportName();
+  if (process.env.NODE_ENV === "production" && transporte === "dev") {
+    logger.warn("E-MAILS DESLIGADOS: MAIL_TRANSPORT=dev em produção. Configure BREVO_API_KEY (ou SMTP) no ambiente.");
+  } else {
+    logger.info({ transporte }, "envio de e-mail");
+  }
 });
 
 /* Shutdown gracioso: para de aceitar conexões novas, termina as em

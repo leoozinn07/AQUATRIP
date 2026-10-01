@@ -12,10 +12,7 @@ const emailSchema = z.object({
 
 const resetSchema = z
   .object({
-    senha: z
-      .string()
-      .min(8, "A senha precisa ter pelo menos 8 caracteres.")
-      .max(72, "Senha longa demais."),
+    senha: require("../lib/senha").schema(),
     "confirma-senha": z.string(),
   })
   .refine((d) => d.senha === d["confirma-senha"], {

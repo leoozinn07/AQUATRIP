@@ -12,6 +12,7 @@
    ============================================================== */
 const crypto = require("crypto");
 const log = require("../lib/logger").forModule("reservas");
+const notificacao = require("./notificacaoService");
 const bookingRepository = require("../repositories/bookingRepository");
 const paymentRepository = require("../repositories/paymentRepository");
 const marketplaceService = require("./marketplaceService");
@@ -71,6 +72,8 @@ async function createBooking({ userId, slotId, quantity }) {
     );
   }
 
+  // Viagem gratuita já nasce confirmada: avisa como uma paga aprovada
+  if (result.booking.status === "CONFIRMED") notificacao.avisarConfirmacao(result.booking.id);
   return result.booking;
 }
 
@@ -294,10 +297,12 @@ async function applyPaymentStatus({ provider, providerPaymentId, status }) {
   });
 
   if (status === PaymentStatus.APPROVED) {
-    await bookingRepository.markConfirmed(payment.booking_id);
+    const confirmou = await bookingRepository.markConfirmed(payment.booking_id);
     await auditService.log(AuditAction.BOOKING_CONFIRMED, {
       metadata: { bookingId: payment.booking_id, paymentId: payment.id },
     });
+    // Só na transição de verdade: webhook repetido não manda e-mail de novo
+    if (confirmou) notificacao.avisarConfirmacao(payment.booking_id);
   } else if (status === PaymentStatus.REJECTED) {
     // Cartão recusado (CVV digitado errado, limite, banco pedindo
     // autorização) é comum e a pessoa costuma tentar de novo na hora,
@@ -313,7 +318,8 @@ async function applyPaymentStatus({ provider, providerPaymentId, status }) {
       onlyIfStatus: "PENDING",
     });
   } else if (status === PaymentStatus.REFUNDED) {
-    await bookingRepository.markRefunded(payment.booking_id);
+    const estornou = await bookingRepository.markRefunded(payment.booking_id);
+    if (estornou) notificacao.avisarCancelamento(payment.booking_id, { estornada: true });
     await auditService.log(AuditAction.PAYMENT_REFUNDED, {
       metadata: {
         bookingId: payment.booking_id,
@@ -339,7 +345,9 @@ async function cancelBooking({ bookingId, user }) {
   if (booking.status === "CONFIRMED") {
     const payment = await paymentRepository.findLatestByBooking(bookingId);
     if (!payment || payment.status !== PaymentStatus.APPROVED) {
-      await bookingRepository.markCancelled(bookingId);
+      // Confirmada sem pagamento aprovado = viagem gratuita
+      const cancelou = await bookingRepository.markCancelled(bookingId);
+      if (cancelou) notificacao.avisarCancelamento(bookingId);
       return { status: "CANCELLED", refunded: false };
     }
 

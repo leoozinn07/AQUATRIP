@@ -12,7 +12,7 @@ const nomeSchema = z.object({
 });
 const senhaSchema = z.object({
   senhaAtual: z.string().min(1, "Informe a senha atual."),
-  novaSenha: z.string().min(8, "A nova senha precisa ter pelo menos 8 caracteres.").max(72, "Senha longa demais."),
+  novaSenha: require("../lib/senha").schema(),
   confirmaSenha: z.string(),
 }).refine((d) => d.novaSenha === d.confirmaSenha, { message: "As senhas não coincidem.", path: ["confirmaSenha"] });
 const emailSchema = z.object({

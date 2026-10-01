@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="/css/reservas.css">
   <link rel="stylesheet" href="/css/recuperacao.css">
   <script src="/js/theme.js"></script>
+  <script src="/js/validacao.js" defer></script>
 </head>
 <body>
 
@@ -34,12 +35,19 @@
           <p class="form-alert form-alert-error" role="alert"><%= tm(error) %></p>
         <% } %>
 
-        <form action="/redefinir-senha/<%= token %>" method="POST" novalidate>
+        <form action="/redefinir-senha/<%= token %>" method="POST" id="form" novalidate>
           <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
           <label for="senha"><%= t('auth.nova_senha') %></label>
           <input type="password" id="senha" name="senha" required minlength="8"
-                 autocomplete="new-password">
+                 autocomplete="new-password" aria-describedby="senha-regras">
+          <ul class="senha-regras" id="senha-regras" data-senha-regras aria-label="<%= t('auth.regras_aria') %>"
+              data-ok="<%= t('auth.regra_ok') %>" data-falta="<%= t('auth.regra_falta') %>">
+            <li data-regra="tamanho"><%= t('auth.regra_tamanho') %></li>
+            <li data-regra="letra"><%= t('auth.regra_letra') %></li>
+            <li data-regra="numero"><%= t('auth.regra_numero') %></li>
+            <li data-regra="especial"><%= t('auth.regra_especial') %></li>
+          </ul>
 
           <label for="confirma-senha"><%= t('auth.confirme_nova_senha') %></label>
           <input type="password" id="confirma-senha" name="confirma-senha" required

@@ -98,7 +98,8 @@
       <section class="grid-2">
         <article class="field">
           <label for="novaSenha"><%= t('auth.nova_senha') %></label>
-          <input type="password" id="novaSenha" name="novaSenha" autocomplete="new-password" minlength="8" aria-describedby="err_novaSenha"/>
+          <input type="password" id="novaSenha" name="novaSenha" autocomplete="new-password" minlength="8" aria-describedby="ajuda_novaSenha err_novaSenha"/>
+          <span class="field-help" id="ajuda_novaSenha"><%= t('auth.senha_ajuda') %></span>
           <p class="field-error" id="err_novaSenha" role="alert"></p>
         </article>
         <article class="field">

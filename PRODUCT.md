@@ -18,7 +18,7 @@ AquaTrip é um marketplace de experiências aquáticas **no Brasil**: o cliente 
 Um lugar só para experiências *na água* pelo Brasil, com datas e vagas reais, reserva direta com quem organiza e o pagamento indo direto para o parceiro (Mercado Pago, com divisão automática).
 
 ## Operating Context
-- **É um simulador.** Pagamentos (PIX/cartão), a conexão com o Mercado Pago e os e-mails funcionam de ponta a ponta, mas simulados. Nenhum dinheiro real se move.
+- **Pagamentos são simulados.** PIX/cartão e a conexão com o Mercado Pago funcionam de ponta a ponta, mas nenhum dinheiro real se move. E-mails saem de verdade quando há provedor configurado (Brevo/SMTP); sem ele, ficam em tmp/emails.
 - Jornada do viajante: descobrir (busca e 6 categorias) → escolher data/horário com vaga → reservar (vaga segura por 15 min) → pagar → comprovante → avaliação com fotos.
 - Jornada do parceiro: `/parceiros` (landing) → conta → cadastro (CPF/CNPJ, área liberada na hora) → publicar experiências (no ar na hora; moderação depois, por denúncias) → conectar o Mercado Pago → operar reservas e vendas em `/parceiro`.
 - Admin único em `/admin` (moderação, auditoria, atendimento).

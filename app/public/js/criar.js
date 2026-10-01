@@ -44,7 +44,7 @@
     const erros = [];
     const v = (id) => $(id).value.trim();
     if (v("cxTitle").length < 6) erros.push(["title", t("cx_err_titulo", null, "O título precisa ter pelo menos 6 caracteres.")]);
-    if (v("cxDesc").length < 30) erros.push(["description", t("cx_err_desc", null, "Descreva a experiência com pelo menos 30 caracteres.")]);
+    if (v("cxDesc").length < 20) erros.push(["description", t("cx_err_desc", null, "Descreva a experiência com pelo menos 20 caracteres.")]);
     if (!form.querySelector('input[name="category"]:checked')) erros.push(["category", t("cx_err_cat", null, "Escolha o tipo de experiência.")]);
     if (v("cxLoc").length < 3) erros.push(["location", t("cx_err_destino", null, "Informe o destino.")]);
     if (!v("cxDate")) erros.push(["date", t("cx_err_data", null, "Escolha a data.")]);
