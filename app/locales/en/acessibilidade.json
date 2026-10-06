@@ -8,5 +8,17 @@
     "estado_off": "Off.",
     "botao_on": "Turn on Libras",
     "botao_off": "Turn off Libras"
+  },
+  "animacoes": {
+    "titulo": "Animations",
+    "texto": "The logo intro, the water that reacts to the mouse, the bubbles and the transitions between pages.",
+    "sistema": "Follow my device",
+    "ligado": "Always on",
+    "desligado": "Always off",
+    "estado_sistema_reduz": "Your device is asking for less motion, so animations are off. On Windows this comes from Settings > Accessibility > Visual effects > Animation effects (off); on a Mac, from Accessibility > Display > Reduce motion. To see the animations, turn the effects on in your device or choose \"Always on\" here.",
+    "estado_sistema_ok": "Animations are on, following your device.",
+    "estado_forcado_ligado": "Animations are always on in this browser, even if your device asks for less motion.",
+    "estado_forcado_desligado": "Animations are off in this browser.",
+    "webgl": "This browser has no graphics acceleration (WebGL2), so the intro water doesn't show. In Chrome or Edge: Settings > System > \"Use graphics acceleration when available\", then restart the browser."
   }
 }

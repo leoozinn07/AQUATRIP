@@ -98,7 +98,7 @@
   animation: brick-pulse 1.6s ease-in-out infinite;
 }
 @keyframes brick-pulse { 50% { opacity: .55; } }
-@media (prefers-reduced-motion: reduce) { .brick-loading { animation: none; } }
+@media (prefers-reduced-motion: reduce) { html:not([data-movimento="normal"]) .brick-loading { animation: none; } }
 #payButton[aria-busy="true"] { opacity: .7; cursor: progress; }
 .pci-note { padding: 12px 14px; background: var(--accent-soft); border-radius: var(--radius); color: var(--ink-2); font-size: .9rem; margin-bottom: 16px; }
 

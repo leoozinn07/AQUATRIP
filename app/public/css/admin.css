@@ -789,7 +789,7 @@ dialog .modal--wide { width: min(760px, 94vw); max-height: 88vh; overflow-y: aut
   vertical-align: 1px;
 }
 @keyframes live-pulso { 70% { box-shadow: 0 0 0 7px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
-@media (prefers-reduced-motion: reduce) { .live-dot { animation: none; } }
+@media (prefers-reduced-motion: reduce) { html:not([data-movimento="normal"]) .live-dot { animation: none; } }
 .adm-check { font-size: var(--text-sm); white-space: nowrap; align-items: center; }
 .link-btn { border: 0; background: none; padding: 0; color: var(--accent-ink); font: inherit; font-weight: 600; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
 .adm-lgpd { display: flex; gap: 8px; align-items: center; padding: 8px 12px; border-radius: var(--radius-sm); background: var(--warning-soft); color: var(--warning); }

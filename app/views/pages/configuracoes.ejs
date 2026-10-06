@@ -56,6 +56,29 @@
       </fieldset>
     </section>
 
+    <section class="config-sec" id="animacoes" aria-labelledby="c-anim">
+      <div class="config-sec-head">
+        <h2 id="c-anim"><%= t('animacoes.titulo') %></h2>
+        <p><%= t('animacoes.texto') %></p>
+      </div>
+      <div>
+      <fieldset class="seg seg--lg">
+        <legend class="sr-only"><%= t('animacoes.titulo') %></legend>
+        <button type="button" data-movimento-set="sistema" aria-pressed="false"><i data-lucide="monitor-smartphone"></i> <%= t('animacoes.sistema') %></button>
+        <button type="button" data-movimento-set="ligado" aria-pressed="false"><i data-lucide="sparkles"></i> <%= t('animacoes.ligado') %></button>
+        <button type="button" data-movimento-set="desligado" aria-pressed="false"><i data-lucide="pause"></i> <%= t('animacoes.desligado') %></button>
+      </fieldset>
+      <%# Diagnóstico preenchido pelo theme.js: só a frase do estado atual aparece %>
+      <div class="config-note mov-diag" role="status" aria-live="polite">
+        <p data-mov-estado="sistema-reduz" hidden><%= t('animacoes.estado_sistema_reduz') %></p>
+        <p data-mov-estado="sistema-ok" hidden><%= t('animacoes.estado_sistema_ok') %></p>
+        <p data-mov-estado="forcado-ligado" hidden><%= t('animacoes.estado_forcado_ligado') %></p>
+        <p data-mov-estado="forcado-desligado" hidden><%= t('animacoes.estado_forcado_desligado') %></p>
+        <p data-mov-webgl hidden><%= t('animacoes.webgl') %></p>
+      </div>
+      </div>
+    </section>
+
     <section class="config-sec" aria-labelledby="c-libras">
       <div class="config-sec-head">
         <h2 id="c-libras"><%= t('libras.titulo') %></h2>

@@ -19,7 +19,8 @@ describe("Água interativa da abertura", () => {
   });
 
   it("desiste com reduzir movimento, economia de dados ou sem WebGL2", () => {
-    expect(fonte).toMatch(/prefers-reduced-motion: reduce\)"\)\.matches\) return;/);
+    // Decisão central do theme.js (aparelho + Configurações > Animações)
+    expect(fonte).toMatch(/if \(\(window\.AQ_MOVIMENTO \? window\.AQ_MOVIMENTO\.reduzir : window\.matchMedia\("\(prefers-reduced-motion: reduce\)"\)\.matches\)\) return;/);
     expect(fonte).toMatch(/saveData\) return;/);
     expect(fonte).toMatch(/if \(!gl \|\| !gl\.getExtension\("EXT_color_buffer_float"\)\) return;/);
   });

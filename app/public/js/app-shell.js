@@ -140,7 +140,7 @@
       });
     }
   }
-  function reduzMovimento() { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
+  function reduzMovimento() { return window.AQ_MOVIMENTO ? window.AQ_MOVIMENTO.reduzir : window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
 
   /* SEARCH OVERLAY */
   const searchOverlay = document.getElementById('searchOverlay');

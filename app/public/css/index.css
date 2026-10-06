@@ -297,14 +297,13 @@
   flex-basis: clamp(240px, 22vw, 300px); align-content: center; justify-items: start;
   border: 1px solid var(--line-strong); border-radius: var(--radius-m); padding: 28px; min-height: 100%;
 }
+/* Só com movimento liberado (theme.js: aparelho ou Configurações > Animações) */
 @supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .carousel .exp-media { animation: card-depth linear both; animation-timeline: view(inline); }
-    @keyframes card-depth {
-      0% { transform: scale(.9); filter: saturate(.6) brightness(.9); }
-      35%, 65% { transform: scale(1); filter: none; }
-      100% { transform: scale(.94); filter: saturate(.8); }
-    }
+  html[data-movimento="normal"] .carousel .exp-media { animation: card-depth linear both; animation-timeline: view(inline); }
+  @keyframes card-depth {
+    0% { transform: scale(.9); filter: saturate(.6) brightness(.9); }
+    35%, 65% { transform: scale(1); filter: none; }
+    100% { transform: scale(.94); filter: saturate(.8); }
   }
 }
 

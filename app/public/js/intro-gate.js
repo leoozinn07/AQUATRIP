@@ -8,7 +8,7 @@
 (function () {
   "use strict";
   try {
-    var reduz = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var reduz = (window.AQ_MOVIMENTO ? window.AQ_MOVIMENTO.reduzir : window.matchMedia("(prefers-reduced-motion: reduce)").matches); // decisão do theme.js
     var viu = sessionStorage.getItem("aquatrip_intro") === "1";
     if (!reduz && !viu) document.documentElement.classList.add("intro-on");
   } catch (e) { /* sem sessionStorage: segue sem abertura */ }

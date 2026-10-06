@@ -11,7 +11,7 @@
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var root = document.documentElement;
-  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var reduce = (window.AQ_MOVIMENTO ? window.AQ_MOVIMENTO.reduzir : window.matchMedia("(prefers-reduced-motion: reduce)").matches); // decisão do theme.js
   var hasGsap = typeof window.gsap !== "undefined" && typeof window.ScrollTrigger !== "undefined";
 
   /* ------------------------------------------------------------

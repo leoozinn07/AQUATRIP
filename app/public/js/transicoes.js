@@ -14,7 +14,7 @@
 (function () {
   "use strict";
   if (!("onpagereveal" in window)) return;
-  var reduzir = window.matchMedia("(prefers-reduced-motion: reduce)");
+  function reduzir() { return (window.AQ_MOVIMENTO ? window.AQ_MOVIMENTO.reduzir : window.matchMedia("(prefers-reduced-motion: reduce)").matches); }
   var CHAVE = "aquatrip_vt_de";
 
   function limpar() {
@@ -71,7 +71,7 @@
     var destino = e.activation && e.activation.entry ? e.activation.entry.url : null;
     var para = destino ? slugDe(destino) : null;
     var aqui = slugDe(location.href);
-    var ok = !reduzir.matches && (
+    var ok = !reduzir() && (
       (para && !aqui && marcarCartao(para)) ||   // cartão -> experiência
       (aqui && !para && marcarPagina())          // experiência -> lista
     );
@@ -86,7 +86,7 @@
     try { origem = sessionStorage.getItem(CHAVE); } catch (err) {}
     var de = origem ? slugDe(origem) : null;
     var aqui = slugDe(location.href);
-    var ok = !reduzir.matches && origem && (
+    var ok = !reduzir() && origem && (
       (aqui && !de && marcarPagina()) ||         // chegou do cartão
       (de && !aqui && marcarCartao(de))          // voltou para a lista
     );

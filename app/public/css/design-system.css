@@ -267,13 +267,27 @@ h3 { font-size: var(--text-lg); letter-spacing: -0.02em; }
 
 p { text-wrap: pretty; }
 
+/* Menos movimento: pedido pelo aparelho ou escolhido em Configurações >
+   Animações (theme.js marca html[data-movimento]). "Sempre ligadas"
+   (data-movimento="normal") vence o pedido do aparelho; sem JavaScript,
+   vale o do aparelho. */
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after {
+  html:not([data-movimento="normal"]) { scroll-behavior: auto; }
+  html:not([data-movimento="normal"]) *,
+  html:not([data-movimento="normal"]) *::before,
+  html:not([data-movimento="normal"]) *::after {
     animation-duration: .01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
   }
+}
+html[data-movimento="reduzido"] { scroll-behavior: auto; }
+html[data-movimento="reduzido"] *,
+html[data-movimento="reduzido"] *::before,
+html[data-movimento="reduzido"] *::after {
+  animation-duration: .01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: .01ms !important;
 }
 
 /* ==============================================================
@@ -501,8 +515,8 @@ input.is-valid:focus, textarea.is-valid:focus { box-shadow: 0 0 0 4px color-mix(
 .btn-ghost[aria-busy="true"]::after, .btn-secondary[aria-busy="true"]::after { border-color: var(--ink); border-right-color: transparent; }
 @keyframes gira { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) {
-  .field-error:not(:empty):not(.span-required), .span-required.is-on { animation: none; }
-  [aria-busy="true"]::after { animation-duration: 1.6s; }
+  html:not([data-movimento="normal"]) .field-error:not(:empty):not(.span-required), html:not([data-movimento="normal"]) .span-required.is-on { animation: none; }
+  html:not([data-movimento="normal"]) [aria-busy="true"]::after { animation-duration: 1.6s; }
 }
 
 /* Cartão de formulário: superfície única, respiro generoso */
@@ -714,7 +728,7 @@ main { flex: 1 0 auto; }
   transform: translateX(-100%); animation: skeleton 1.4s ease-in-out infinite;
 }
 @keyframes skeleton { 100% { transform: translateX(100%); } }
-@media (prefers-reduced-motion: reduce) { .skeleton::after { animation: none; } }
+@media (prefers-reduced-motion: reduce) { html:not([data-movimento="normal"]) .skeleton::after { animation: none; } }
 
 /* Avisos de formulário */
 .form-alert {
