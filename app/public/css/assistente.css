@@ -124,8 +124,8 @@
   @keyframes aq-sobe { from { transform: translateY(100%); } }
 }
 @media (prefers-reduced-motion: reduce) {
-  .aq-bot-panel, .aq-msg { animation: none; }
-  .aq-typing span { animation: none; opacity: .7; }
+  html:not([data-movimento="normal"]) .aq-bot-panel, html:not([data-movimento="normal"]) .aq-msg { animation: none; }
+  html:not([data-movimento="normal"]) .aq-typing span { animation: none; opacity: .7; }
 }
 /* Impressão: o assistente não vai para o papel. */
 @media print { .aq-bot { display: none; } }

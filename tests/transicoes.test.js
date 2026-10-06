@@ -32,11 +32,12 @@ describe("Transição entre cartão e experiência", () => {
     }
   });
 
-  it("o CSS só liga a transição sem 'reduzir movimento' e o script pula o resto", () => {
+  it("o CSS liga a transição e o script pula o que não é cartão <-> experiência ou com movimento reduzido", () => {
     const css = fs.readFileSync(path.join(__dirname, "..", "app", "public", "css", "transicoes.css"), "utf8");
-    expect(css).toMatch(/@media \(prefers-reduced-motion: no-preference\) \{\s*@view-transition \{ navigation: auto; \}/);
+    expect(css).toMatch(/@view-transition \{ navigation: auto; \}/);
     const js = fs.readFileSync(path.join(__dirname, "..", "app", "public", "js", "transicoes.js"), "utf8");
     expect(js).toContain("skipTransition()");
+    expect(js).toContain("window.AQ_MOVIMENTO.reduzir");
     expect(js).toContain('if (!("onpagereveal" in window)) return;');
   });
 });

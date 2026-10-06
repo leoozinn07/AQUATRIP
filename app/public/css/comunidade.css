@@ -306,7 +306,7 @@
 .fb-resp { padding: 12px 14px; border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 var(--radius) var(--radius) 0; display: grid; gap: 4px; }
 
 @media (prefers-reduced-motion: reduce) {
-  .cc-card, .cc-media img, .cx-thumb, .sx-comment.is-new, .cx-dialog[open] { transition: none; animation: none; }
+  html:not([data-movimento="normal"]) .cc-card, html:not([data-movimento="normal"]) .cc-media img, html:not([data-movimento="normal"]) .cx-thumb, html:not([data-movimento="normal"]) .sx-comment.is-new, html:not([data-movimento="normal"]) .cx-dialog[open] { transition: none; animation: none; }
 }
 
 /* ---------- Conteúdo de demonstração (npm run db:seed:comunidade) ----------

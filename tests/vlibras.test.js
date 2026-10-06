@@ -3,6 +3,9 @@
    Só carrega para quem liga; sem a opção, nenhum script de terceiro
    e a CSP continua fechada em 'self'.
    ============================================================== */
+const fs = require("fs");
+const path = require("path");
+const vm = require("vm");
 const request = require("supertest");
 const { app, extractCsrf } = require("./helpers");
 
@@ -20,6 +23,7 @@ describe("VLibras", () => {
     expect(res.text).not.toContain("vlibras.gov.br");
     expect(res.text).not.toContain("<div vw");
     expect(diretiva(res, "script-src")).toBe("script-src 'self'");
+    expect(csp(res)).not.toContain("frame-src");
     // O botão de ligar está no cabeçalho, como formulário (funciona sem JS)
     expect(res.text).toMatch(/<form class="libras-form" action="\/configuracoes\/libras" method="POST">[\s\S]*?name="ligar" value="1"/);
     expect(res.text).toContain('aria-label="Ativar tradução para Libras (VLibras)"');
@@ -45,6 +49,9 @@ describe("VLibras", () => {
     expect(script).toContain("https://vlibras.gov.br");
     expect(script).toContain("'wasm-unsafe-eval'");
     expect(diretiva(res, "connect-src")).toContain("https://*.vlibras.gov.br");
+    // O avatar da versão atual (7.x) fica num iframe de vlibras.gov.br/app/unity:
+    // sem frame-src, a CSP caía no default-src 'self' e o avatar não aparecia
+    expect(diretiva(res, "frame-src")).toBe("frame-src 'self' https://vlibras.gov.br https://*.vlibras.gov.br");
     // Nada além do VLibras entra na CSP
     expect(csp(res)).not.toMatch(/https:\/\/(?!vlibras\.gov\.br|\*\.vlibras\.gov\.br)[^\s;]+/);
 
@@ -71,5 +78,30 @@ describe("VLibras", () => {
       const res = await request(app).get("/configuracoes").set("Cookie", `aquatrip_lang=${lang}`);
       expect(res.text).toContain(texto);
     }
+  });
+
+  it("ao ligar a opção, o painel do VLibras abre sozinho na página seguinte (uma vez)", () => {
+    const codigo = fs.readFileSync(path.join(__dirname, "..", "app", "public", "js", "vlibras.js"), "utf8");
+    function rodar(marcado) {
+      const guardado = new Map(marcado ? [["aquatrip_libras_abrir", "1"]] : []);
+      const chamadas = { widget: [], open: 0 };
+      const window = {
+        VLibras: { Widget: function (raiz) { chamadas.widget.push(raiz); window.VLibrasWidget = { open: () => { chamadas.open++; } }; } },
+      };
+      const sessionStorage = {
+        getItem: (k) => (guardado.has(k) ? guardado.get(k) : null),
+        removeItem: (k) => guardado.delete(k),
+      };
+      vm.runInNewContext(codigo, { window, sessionStorage });
+      return { ...chamadas, sobrou: guardado.has("aquatrip_libras_abrir") };
+    }
+    expect(rodar(true)).toEqual({ widget: ["https://vlibras.gov.br/app"], open: 1, sobrou: false });
+    expect(rodar(false)).toEqual({ widget: ["https://vlibras.gov.br/app"], open: 0, sobrou: false });
+
+    // Quem marca o pedido é o envio do formulário de LIGAR (cabeçalho ou Configurações)
+    const shell = fs.readFileSync(path.join(__dirname, "..", "app", "public", "js", "app-shell.js"), "utf8");
+    expect(shell).toContain(`form.matches('form[action="/configuracoes/libras"]')`);
+    expect(shell).toContain("form.elements.ligar.value !== '1'");
+    expect(shell).toContain("sessionStorage.setItem('aquatrip_libras_abrir', '1')");
   });
 });

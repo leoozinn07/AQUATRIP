@@ -140,7 +140,7 @@
       });
     }
   }
-  function reduzMovimento() { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
+  function reduzMovimento() { return window.AQ_MOVIMENTO ? window.AQ_MOVIMENTO.reduzir : window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
 
   /* SEARCH OVERLAY */
   const searchOverlay = document.getElementById('searchOverlay');
@@ -500,6 +500,15 @@
     const t = document.activeElement;
     if (t && (/INPUT|TEXTAREA|SELECT/.test(t.tagName) || t.isContentEditable)) return;
     if (searchOverlay && !searchOverlay.classList.contains("is-open")) { e.preventDefault(); openSearch(); }
+  });
+
+  /* Libras: ao LIGAR a opção (cabeçalho ou Configurações), pede para
+     o vlibras.js abrir o painel na página seguinte. */
+  document.addEventListener('submit', function (event) {
+    const form = event.target;
+    if (!form.matches('form[action="/configuracoes/libras"]')) return;
+    if (!form.elements.ligar || form.elements.ligar.value !== '1') return;
+    try { sessionStorage.setItem('aquatrip_libras_abrir', '1'); } catch (e) { /* sem armazenamento */ }
   });
 
   /* ══════════════════════════════════════════════════════════

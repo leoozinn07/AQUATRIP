@@ -34,3 +34,7 @@
 .config-links small { color: var(--ink-2); font-size: .85rem; }
 .config-note { color: var(--ink-2); }
 .config-note a { font-weight: 600; }
+
+/* Diagnóstico das animações (theme.js mostra só a frase do estado atual) */
+.mov-diag { display: grid; gap: 8px; margin-top: 14px; }
+.mov-diag p { margin: 0; max-width: 62ch; }

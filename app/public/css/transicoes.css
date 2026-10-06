@@ -6,9 +6,9 @@
    primeira pintura, e a regra precisa já estar carregada. O que
    anima e o que é pulado decide o transicoes.js.
    ============================================================== */
-@media (prefers-reduced-motion: no-preference) {
-  @view-transition { navigation: auto; }
-}
+/* Liga sempre; o transicoes.js pula a animação quando o movimento está
+   reduzido (aparelho ou Configurações > Animações). */
+@view-transition { navigation: auto; }
 ::view-transition-group(root) { animation-duration: 260ms; }
 ::view-transition-group(vt-foto),
 ::view-transition-group(vt-titulo) {

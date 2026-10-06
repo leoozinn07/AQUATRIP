@@ -20,7 +20,7 @@
   var hero = document.querySelector("[data-hero]");
   var img = document.getElementById("heroImg");
   if (!hero || !img) return;
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if ((window.AQ_MOVIMENTO ? window.AQ_MOVIMENTO.reduzir : window.matchMedia("(prefers-reduced-motion: reduce)").matches)) return;
   if (navigator.connection && navigator.connection.saveData) return;
 
   var canvas = document.createElement("canvas");

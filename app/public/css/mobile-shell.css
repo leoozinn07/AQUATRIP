@@ -256,7 +256,7 @@
 .menu-open .bottom-nav { opacity: 0; pointer-events: none; }
 @media (max-width: 1023px) { body:has(.bottom-nav) { --bottom-nav-h: 84px; } }
 @media (min-width: 1024px) { .bottom-nav { display: none; } }
-@media (prefers-reduced-motion: reduce) { .bottom-nav-pill { transition: none; } }
+@media (prefers-reduced-motion: reduce) { html:not([data-movimento="normal"]) .bottom-nav-pill { transition: none; } }
 
 
 /* ==============================================================
@@ -454,9 +454,9 @@
 .welcome-skip { animation-name: welcome-bg-copy; animation-duration: 10ms; animation-delay: 1.9s; animation-fill-mode: forwards; }
 .welcome.is-skipping { opacity: 0; transition: opacity 400ms ease; }
 @media (prefers-reduced-motion: reduce) {
-  .welcome-wave { display: none; }
-  .welcome { animation: welcome-done 400ms ease 1.6s forwards; }
-  .welcome-copy { animation: none; }
+  html:not([data-movimento="normal"]) .welcome-wave { display: none; }
+  html:not([data-movimento="normal"]) .welcome { animation: welcome-done 400ms ease 1.6s forwards; }
+  html:not([data-movimento="normal"]) .welcome-copy { animation: none; }
 }
 
 /* ==============================================================

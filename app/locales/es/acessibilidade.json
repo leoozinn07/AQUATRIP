@@ -8,5 +8,17 @@
     "estado_off": "Desactivado.",
     "botao_on": "Activar Libras",
     "botao_off": "Desactivar Libras"
+  },
+  "animacoes": {
+    "titulo": "Animaciones",
+    "texto": "La apertura con el logo, el agua que reacciona al mouse, las burbujas y las transiciones entre páginas.",
+    "sistema": "Seguir el dispositivo",
+    "ligado": "Siempre activadas",
+    "desligado": "Siempre desactivadas",
+    "estado_sistema_reduz": "Tu dispositivo está pidiendo menos movimiento, por eso las animaciones están desactivadas. En Windows viene de Configuración > Accesibilidad > Efectos visuales > Efectos de animación (desactivado); en Mac, de Accesibilidad > Pantalla > Reducir movimiento. Para ver las animaciones, activa los efectos en el dispositivo o elige \"Siempre activadas\" aquí.",
+    "estado_sistema_ok": "Las animaciones están activadas, siguiendo tu dispositivo.",
+    "estado_forcado_ligado": "Las animaciones están siempre activadas en este navegador, aunque el dispositivo pida menos movimiento.",
+    "estado_forcado_desligado": "Las animaciones están desactivadas en este navegador.",
+    "webgl": "Este navegador no tiene aceleración gráfica (WebGL2), así que el agua de la apertura no aparece. En Chrome o Edge: Configuración > Sistema > \"Usar aceleración gráfica cuando esté disponible\" y reinicia el navegador."
   }
 }

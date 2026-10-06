@@ -1,5 +1,5 @@
 /* ==============================================================
-   AquaTrip · Tema claro/escuro
+   AquaTrip · Tema claro/escuro e animações
    ==============================================================
    Carregado de forma BLOQUEANTE no <head> (sem defer): a CSP
    proíbe script inline, e um arquivo pequeno e síncrono aplica o
@@ -9,6 +9,14 @@
    "light" e "dark". Controles:
    - [data-theme-toggle]  botão que alterna claro/escuro
    - [data-theme-set]     botões de escolha (menu e Configurações)
+
+   Animações: "sistema" (padrão: segue o "reduzir movimento" do
+   aparelho), "ligado" ou "desligado". O resultado vai para
+   html[data-movimento="normal"|"reduzido"] (CSS) e para
+   window.AQ_MOVIMENTO.reduzir (abertura, água, bolhas, rolagem e
+   transições leem daqui). Quem pediu menos movimento no aparelho
+   continua sem animação, a não ser que ligue aqui de propósito.
+   - [data-movimento-set] botões de escolha (Configurações)
    ============================================================== */
 (function () {
   "use strict";
@@ -29,8 +37,30 @@
     else document.documentElement.removeAttribute("data-theme");
   }
 
+  var CHAVE_MOV = "aquatrip_movimento";
+  var mqMov = window.matchMedia("(prefers-reduced-motion: reduce)");
+  function movSalvo() {
+    try {
+      var v = localStorage.getItem(CHAVE_MOV);
+      return v === "ligado" || v === "desligado" ? v : "sistema";
+    } catch (e) { return "sistema"; }
+  }
+  function guardarMov(v) {
+    try {
+      if (v === "ligado" || v === "desligado") localStorage.setItem(CHAVE_MOV, v);
+      else localStorage.removeItem(CHAVE_MOV);
+    } catch (e) {}
+  }
+  function aplicarMov() {
+    var pref = movSalvo();
+    var reduzir = pref === "desligado" || (pref === "sistema" && mqMov.matches);
+    window.AQ_MOVIMENTO = { preferencia: pref, sistemaReduz: mqMov.matches, reduzir: reduzir };
+    document.documentElement.setAttribute("data-movimento", reduzir ? "reduzido" : "normal");
+  }
+
   // 1) Antes da pintura
   aplicar(salvo());
+  aplicarMov();
 
   // 2) Depois do DOM: liga os controles
   document.addEventListener("DOMContentLoaded", function () {
@@ -79,5 +109,38 @@
     window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function () {
       if (!salvo()) sincronizar();
     });
+
+    // Animações (Configurações): escolha + diagnóstico do aparelho
+    var movEscolhas = document.querySelectorAll("[data-movimento-set]");
+    function sincronizarMov() {
+      var m = window.AQ_MOVIMENTO;
+      movEscolhas.forEach(function (b) {
+        b.setAttribute("aria-pressed", String(b.getAttribute("data-movimento-set") === m.preferencia));
+      });
+      // Mostra só a frase que explica o estado atual
+      var estado = m.preferencia === "ligado" ? "forcado-ligado"
+        : m.preferencia === "desligado" ? "forcado-desligado"
+        : m.sistemaReduz ? "sistema-reduz" : "sistema-ok";
+      document.querySelectorAll("[data-mov-estado]").forEach(function (el) {
+        el.hidden = el.getAttribute("data-mov-estado") !== estado;
+      });
+    }
+    movEscolhas.forEach(function (b) {
+      b.addEventListener("click", function () {
+        guardarMov(b.getAttribute("data-movimento-set"));
+        aplicarMov(); sincronizarMov();
+      });
+    });
+    mqMov.addEventListener("change", function () { aplicarMov(); sincronizarMov(); });
+    if (movEscolhas.length) {
+      sincronizarMov();
+      // A água da abertura precisa de WebGL2 (aceleração gráfica do navegador)
+      var aviso = document.querySelector("[data-mov-webgl]");
+      if (aviso) {
+        var gl = null;
+        try { gl = document.createElement("canvas").getContext("webgl2"); } catch (e) {}
+        aviso.hidden = Boolean(gl && gl.getExtension("EXT_color_buffer_float"));
+      }
+    }
   });
 })();

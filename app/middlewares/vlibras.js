@@ -12,6 +12,13 @@
    3D precisa compilar WebAssembly ('wasm-unsafe-eval') e o carregador
    antigo do Unity usa eval ('unsafe-eval'): por isso a opção é
    explícita e só vale para quem a ativou.
+
+   A versão atual do widget (7.x) desenha o avatar dentro de um iframe
+   (vlibras.gov.br/app/unity/index.html). Sem frame-src, a CSP caía no
+   default-src 'self' e bloqueava esse iframe: o painel abria e o avatar
+   nunca aparecia. O gov.br usa o endereço com e sem "www", daí o
+   *.vlibras.gov.br. A telemetria que o widget tenta carregar (PostHog,
+   via jsDelivr) continua bloqueada de propósito; ele segue sem ela.
    ============================================================== */
 const { ampliar } = require("./cspMercadoPago");
 
@@ -19,7 +26,8 @@ const COOKIE = "aquatrip_libras";
 const RAIZ = "https://vlibras.gov.br/app";
 
 const ORIGENS = {
-  "script-src": ["https://vlibras.gov.br", "'unsafe-eval'", "'wasm-unsafe-eval'"],
+  "script-src": ["https://vlibras.gov.br", "https://*.vlibras.gov.br", "'unsafe-eval'", "'wasm-unsafe-eval'"],
+  "frame-src": ["https://vlibras.gov.br", "https://*.vlibras.gov.br"],
   "connect-src": ["https://vlibras.gov.br", "https://*.vlibras.gov.br", "blob:", "data:"],
   "img-src": ["https://vlibras.gov.br", "https://*.vlibras.gov.br", "blob:"],
   "style-src": ["https://vlibras.gov.br"],
